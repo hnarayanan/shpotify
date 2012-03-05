@@ -39,7 +39,7 @@ showHelp () {
     echo " prev     = Go to the previous track.";
     echo " vol up   = Increase Spotify's volume by 10%";
     echo " vol down = Increase Spotify's volume by 10%";
-    echo " vol #    = Set Spotify' volume to # [0-100]";
+    echo " vol #    = Set Spotify's volume to # [0-100]";
     echo " quit     = Quit Spotify.";
 }
 
@@ -91,7 +91,7 @@ while [ $# -gt 0 ]; do
             osascript -e "tell application \"Spotify\" to set sound volume to $newvol";
             break ;;
 
-        "quit"    ) echo "Quitting Spotify";
+        "quit"    ) echo "Quitting Spotify.";
             osascript -e 'tell application "Spotify" to quit';
             exit 1 ;;
 
