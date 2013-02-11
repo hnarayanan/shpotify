@@ -18,13 +18,13 @@ from other machines using SSH. In order to use it:
 
    where <option> is one of
 
-   status   = Shows Spotify's status, current track details.
-   play     = Start playing Spotify.
-   pause    = Pause Spotify.
-   next     = Go to the next track.
-   prev     = Go to the previous track.
-   vol up   = Increase Spotify's volume by 10%
-   vol down = Increase Spotify's volume by 10%
-   vol #    = Set Spotify's volume to # [0-100]
-   quit     = Quit Spotify.
+   * status   = Shows Spotify's status, current track details.
+   * play     = Start playing Spotify.
+   * pause    = Pause Spotify.
+   * next     = Go to the next track.
+   * prev     = Go to the previous track.
+   * vol up   = Increase Spotify's volume by 10%
+   * vol down = Increase Spotify's volume by 10%
+   * vol #    = Set Spotify's volume to # [0-100]
+   * ``quit``     = Quit Spotify.
 
