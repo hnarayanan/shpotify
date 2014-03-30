@@ -98,6 +98,18 @@ while [ $# -gt 0 ]; do
             osascript -e "tell application \"Spotify\" to set player position to $2";
             break;;
 
+        "shuffle"    )
+            osascript -e "tell application \"Spotify\" to set shuffling to not shuffling";
+            curr=`osascript -e 'tell application "Spotify" to shuffling'`;
+            echo "Spotify shuffling set to $curr";
+            break;;
+
+        "repeat"    )
+            osascript -e "tell application \"Spotify\" to set repeating to not repeating";
+            curr=`osascript -e 'tell application "Spotify" to repeating'`;
+            echo "Spotify repeating set to $curr";
+            break;;
+
         "quit"    ) echo "Quitting Spotify.";
             osascript -e 'tell application "Spotify" to quit';
             exit 1 ;;
