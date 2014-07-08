@@ -30,6 +30,7 @@ showHelp () {
     echo "  status             # Shows Spotify's status and current track details.";
     echo "  play               # Play Spotify.";
     echo "  pause              # Pause Spotify.";
+    echo "  toggle             # Toggle Play / Pause."
     echo "  next               # Go to the next track.";
     echo "  prev               # Go to the previous track.";
     echo "  vol [up, down, #]  # Set Spotify's volume up, down, or 0-100.";
@@ -67,6 +68,15 @@ while [ $# -gt 0 ]; do
 
         "pause"    ) echo $bold$green"Pausing Spotify.";
             osascript -e 'tell application "Spotify" to pause';
+            break ;;
+
+        "toggle"  ) state=`osascript -e 'tell application "Spotify" to player state as string'`;
+            osascript -e 'tell application "Spotify" to playpause';
+            if [ $state = "playing" ]; then
+              echo $bold$green"Pausing Spotify.";
+            else
+              echo $bold$green"Playing Spotify.";
+            fi
             break ;;
 
         "next"    ) echo $bold$green"Going to next track." ;
