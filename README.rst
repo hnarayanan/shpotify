@@ -27,5 +27,6 @@ from other machines using SSH. In order to use it:
    * vol up   = Increase Spotify's volume by 10%
    * vol down = Increase Spotify's volume by 10%
    * vol #    = Set Spotify's volume to # [0-100]
+   * share    = Copies the current track share URL to clipboard.
    * quit     = Quit Spotify.
 
