@@ -120,14 +120,14 @@ while [ $# -gt 0 ]; do
             echo $bold$green"Spotify repeating set to $curr";
             break;;
 
-        "share"			)
-						url=`osascript -e 'tell application "Spotify" to spotify url of current track'`;
-						remove='spotify:track:'
-						url=${url#$remove}
-						url="http://open.spotify.com/track/$url"
-						echo $bold$green"Share URL: $url";
-						echo "$url" | pbcopy
-						break;;
+        "share"     )
+            url=`osascript -e 'tell application "Spotify" to spotify url of current track'`;
+            remove='spotify:track:'
+            url=${url#$remove}
+            url="http://open.spotify.com/track/$url"
+            echo $bold$green"Share URL: $url";
+            echo "$url" | pbcopy
+            break;;
 
         "quit"    ) echo $bold$green"Quitting Spotify.";
             osascript -e 'tell application "Spotify" to quit';
