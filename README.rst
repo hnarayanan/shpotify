@@ -29,6 +29,7 @@ from other machines using SSH. In order to use it:
    * quit     = Quit Spotify.
 
 Copyright (c) 2012--2014 Harish Narayanan <mail@harishnarayanan.org>
+
 Contains helpful contributions from Jorge Colindres and Thomas Pritchard.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
