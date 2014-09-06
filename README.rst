@@ -19,7 +19,7 @@ from other machines using SSH. In order to use it:
    * status   = Shows Spotify's status, current track details.
    * play     = Start playing Spotify.
    * pause    = Pause Spotify.
-   * toggle		= Toggle play/pause state of Spotify.
+   * toggle   = Toggle play/pause state of Spotify.
    * next     = Go to the next track.
    * prev     = Go to the previous track.
    * vol up   = Increase Spotify's volume by 10%

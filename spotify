@@ -57,7 +57,7 @@ while [ $# -gt 0 ]; do
             echo $bold$green"Spotify is currently $state.";
             if [ $state = "playing" ]; then
                 artist=`osascript -e 'tell application "Spotify" to artist of current track as string'`;
-        album=`osascript -e 'tell application "Spotify" to album of current track as string'`;
+                album=`osascript -e 'tell application "Spotify" to album of current track as string'`;
                 track=`osascript -e 'tell application "Spotify" to name of current track as string'`;
 
                 echo -e $reset"Artist: $artist\nAlbum: $album\nTrack: $track";
