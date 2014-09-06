@@ -37,6 +37,7 @@ showHelp () {
     echo "  pos [#]            # Set Spotify's play position in seconds.";
     echo "  shuffle            # Toggle Spotify shuffle.";
     echo "  repeat             # Toggle Spotify repeat.";
+    echo "  share              # Copies the current track share URL to clipboard."
     echo "  quit               # Quit Spotify.";
 }
 
@@ -117,6 +118,15 @@ while [ $# -gt 0 ]; do
             osascript -e "tell application \"Spotify\" to set repeating to not repeating";
             curr=`osascript -e 'tell application "Spotify" to repeating'`;
             echo $bold$green"Spotify repeating set to $curr";
+            break;;
+
+        "share"     )
+            url=`osascript -e 'tell application "Spotify" to spotify url of current track'`;
+            remove='spotify:track:'
+            url=${url#$remove}
+            url="http://open.spotify.com/track/$url"
+            echo $bold$green"Share URL: $url";
+            echo "$url" | pbcopy
             break;;
 
         "quit"    ) echo $bold$green"Quitting Spotify.";
