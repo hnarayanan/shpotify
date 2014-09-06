@@ -1,8 +1,6 @@
 shpotify: A command-line interface to Spotify
 =============================================
 
-Copyright (c) 2012--2014 Harish Narayanan
-
 This is a simple Bash/Apple script to control Spotify from the
 command line on a Mac. It can be used to remotely control Spotify
 from other machines using SSH. In order to use it:
@@ -29,6 +27,9 @@ from other machines using SSH. In order to use it:
    * vol #    = Set Spotify's volume to # [0-100]
    * share    = Copies the current track share URL to clipboard.
    * quit     = Quit Spotify.
+
+Copyright (c) 2012--2014 Harish Narayanan <mail@harishnarayanan.org>
+Contains helpful contributions from Jorge Colindres and Thomas Pritchard.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
