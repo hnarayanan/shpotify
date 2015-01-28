@@ -109,32 +109,38 @@ while [ $# -gt 0 ]; do
 
         "search"    )
 
-            Q=$2;
+            array=( $@ );
+            len=${#array[@]};
+            _args=${array[@]:1:$len};
+            Q=$_args;
 
-            echo $bold$green"Searching playlists for: $2";
+            echo $bold$green"Searching playlists for: $Q";
 
             SPTFY_URI=$( \
-                curl -X GET "https://api.spotify.com/v1/search?q=$Q&type=playlist&limit=1" -H "Accept: application/json" \
+                curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=playlist&limit=1" -H "Accept: application/json" \
                 | grep -E -o "spotify:user:[a-zA-Z0-9]+:playlist:[a-zA-Z0-9]+" -m 1 \
             )
 
-            echo $bold$green"Playing ($2 Search) -> Spotify URL: $SPTFY_URI";
+            echo $bold$green"Playing ($Q Search) -> Spotify URL: $SPTFY_URI";
 
             osascript -e "tell application \"Spotify\" to play track \"$SPTFY_URI\"";
             break ;;
 
         "searchtrack"    )
 
-            Q=$2;
+            array=( $@ );
+            len=${#array[@]};
+            _args=${array[@]:1:$len};
+            Q=$_args;
 
-            echo $bold$green"Searching tracks for: $2";
+            echo $bold$green"Searching tracks for: $Q";
 
             SPTFY_URI=$( \
                 curl -s -G  --data-urlencode "q=$Q" ws.spotify.com/search/1/track \
                 | grep -E -o "spotify:track:[a-zA-Z0-9]+" -m 1 \
             )
 
-            echo $bold$green"Playing ($2 Search) -> Spotify URL: $SPTFY_URI";
+            echo $bold$green"Playing ($Q Search) -> Spotify URL: $SPTFY_URI";
 
             osascript -e "tell application \"Spotify\" to play track \"$SPTFY_URI\"";
             break ;;
