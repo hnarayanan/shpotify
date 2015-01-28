@@ -28,18 +28,20 @@ showHelp () {
     echo "  `basename $0` <command>";
     echo;
     echo "Commands:";
-    echo "  status             # Shows Spotify's status and current track details.";
-    echo "  play               # Play Spotify.";
-    echo "  pause              # Pause Spotify.";
-    echo "  toggle             # Toggle Play / Pause."
-    echo "  next               # Go to the next track.";
-    echo "  prev               # Go to the previous track.";
-    echo "  vol [up, down, #]  # Set Spotify's volume up, down, or 0-100.";
-    echo "  pos [#]            # Set Spotify's play position in seconds.";
-    echo "  shuffle            # Toggle Spotify shuffle.";
-    echo "  repeat             # Toggle Spotify repeat.";
-    echo "  share              # Copies the current track share URL to clipboard."
-    echo "  quit               # Quit Spotify.";
+    echo "  status                  # Shows Spotify's status and current track details.";
+    echo "  play                    # Play Spotify.";
+    echo "  pause                   # Pause Spotify.";
+    echo "  toggle                  # Toggle Play / Pause."
+    echo "  next                    # Go to the next track.";
+    echo "  prev                    # Go to the previous track.";
+    echo "  vol [up, down, #]       # Set Spotify's volume up, down, or 0-100.";
+    echo "  pos [#]                 # Set Spotify's play position in seconds.";
+    echo "  search [string]         # Search for and start playing a playlist.";
+    echo "  searchtrack [string]    # Search for and start playing a track.";
+    echo "  shuffle                 # Toggle Spotify shuffle.";
+    echo "  repeat                  # Toggle Spotify repeat.";
+    echo "  share                   # Copies the current track share URL to clipboard."
+    echo "  quit                    # Quit Spotify.";
 }
 
 if [ $# = 0 ]; then
@@ -103,6 +105,38 @@ while [ $# -gt 0 ]; do
 
             echo $bold$green"Changing Spotify volume level $text.";
             osascript -e "tell application \"Spotify\" to set sound volume to $newvol";
+            break ;;
+
+        "search"    )
+
+            Q=$2;
+
+            echo $bold$green"Searching playlists for: $2";
+
+            SPTFY_URI=$( \
+                curl -X GET "https://api.spotify.com/v1/search?q=$Q&type=playlist&limit=1" -H "Accept: application/json" \
+                | grep -E -o "spotify:user:[a-zA-Z0-9]+:playlist:[a-zA-Z0-9]+" -m 1 \
+            )
+
+            echo $bold$green"Playing ($2 Search) -> Spotify URL: $SPTFY_URI";
+
+            osascript -e "tell application \"Spotify\" to play track \"$SPTFY_URI\"";
+            break ;;
+
+        "searchtrack"    )
+
+            Q=$2;
+
+            echo $bold$green"Searching tracks for: $2";
+
+            SPTFY_URI=$( \
+                curl -s -G  --data-urlencode "q=$Q" ws.spotify.com/search/1/track \
+                | grep -E -o "spotify:track:[a-zA-Z0-9]+" -m 1 \
+            )
+
+            echo $bold$green"Playing ($2 Search) -> Spotify URL: $SPTFY_URI";
+
+            osascript -e "tell application \"Spotify\" to play track \"$SPTFY_URI\"";
             break ;;
 
         "pos"   ) echo $bold$green"Adjusting Spotify play position."
