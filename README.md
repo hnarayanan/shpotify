@@ -2,12 +2,16 @@ shpotify: A command-line interface to Spotify
 =============================================
 
 This is a simple Bash/Apple script to control Spotify from the command
-line on a Mac. In order to use it:
+line on a Mac.
+
+In order to use it:
 
 1. Fetch a copy of this repository and make sure the `spotify` file in
    this folder is executable:
 
-       chmod +x spotify
+````
+chmod +x spotify
+````
 
 2. Copy the file to a convenient location in your `PATH`.
 
@@ -31,9 +35,15 @@ spotify share                   Shows the current track URL and copies it to the
 spotify toggle shuffle          Toggles shuffle playback mode
 spotify toggle repeat           Toggles repeat playback mode
 
-Need better interfaces:
-Album and playlist playback etc.
-spotify pos [value]             Needs better interface
+Experimental and need more thought:
+
+spotify play <track> [song name] -- The word track is optional and is the default
+spotify play album [album name]
+spotify play artist [artist name]
+spotify play list [playlist name]
+
+
+spotify pos [value]             Needs better interface, could it be folded as part of 'play'?
 
 ````
 
