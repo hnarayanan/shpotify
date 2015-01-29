@@ -49,7 +49,7 @@ spotify pos [value]             Needs better interface, could it be folded as pa
 
 Copyright (c) 2012–2015 Harish Narayanan <mail@harishnarayanan.org>
 
-Contains helpful contributions from Jorge Colindres and Thomas Pritchard.
+Contains helpful contributions from Jorge Colindres, Thomas Pritchard and iLan Epstein(@thepuzzlemaster).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

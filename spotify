@@ -28,20 +28,29 @@ showHelp () {
     echo "  `basename $0` <command>";
     echo;
     echo "Commands:";
-    echo "  status                  # Shows Spotify's status and current track details.";
-    echo "  play                    # Play Spotify.";
-    echo "  pause                   # Pause Spotify.";
-    echo "  toggle                  # Toggle Play / Pause."
-    echo "  next                    # Go to the next track.";
-    echo "  prev                    # Go to the previous track.";
-    echo "  vol [up, down, #]       # Set Spotify's volume up, down, or 0-100.";
-    echo "  pos [#]                 # Set Spotify's play position in seconds.";
-    echo "  search [string]         # Search for and start playing a playlist.";
-    echo "  searchtrack [string]    # Search for and start playing a track.";
-    echo "  shuffle                 # Toggle Spotify shuffle.";
-    echo "  repeat                  # Toggle Spotify repeat.";
-    echo "  share                   # Copies the current track share URL to clipboard."
-    echo "  quit                    # Quit Spotify.";
+    echo "  play                            # Resume playback where Spotify last left off.";
+    echo "  play [song name]                # Searches for a song by name and plays it.";
+    echo "  pause                           # Pause Spotify.";
+    echo "  quit                            # Quit Spotify.";
+    echo "  next                            # Go to the next track.";
+    echo "  prev                            # Go to the previous track.";
+
+    echo "  vol up                          # Increase the volume by 10%.";
+    echo "  vol down                        # Decrease the volume by 10%.";
+    echo "  vol [value]                     # Set the volume to a value between 0 and 100.";
+
+    echo "  status                          # Shows Spotify's status and current track details.";
+    echo "  share                           # Copies the current track share URL to clipboard."
+
+    echo "  toggle shuffle                  # Toggle shuffle playback mode.";
+    echo "  toggle repeat                   # Toggle repeat playback mode.";
+
+    echo "  play <track> [song name]        # The word track is optional and is the default";
+    echo "  play album [album name]         # Search for and start playing an album by name.";
+    echo "  play artist [artist name]       # Search for and start playing an artist by name.";
+    echo "  play list [playlist name]       # Search for and start playing a playlist by name.";
+
+    echo "  pos [#]                         # Set Spotify's play position in seconds.";
 }
 
 if [ $# = 0 ]; then
@@ -55,33 +64,100 @@ while [ $# -gt 0 ]; do
     reset=$(tput sgr0);
 
     case $arg in
-        "status" ) state=`osascript -e 'tell application "Spotify" to player state as string'`;
-            echo $bold$green"Spotify is currently $state.";
-            if [ $state = "playing" ]; then
-                artist=`osascript -e 'tell application "Spotify" to artist of current track as string'`;
-                album=`osascript -e 'tell application "Spotify" to album of current track as string'`;
-                track=`osascript -e 'tell application "Spotify" to name of current track as string'`;
+        "play"    )
+            if [ $# != 1 ]; then
+                # There are additional parameters
+                #get the length of arguments
+                array=( $@ );
+                len=${#array[@]};
+                SPTFY_URI="";
 
-                echo -e $reset"Artist: $artist\nAlbum: $album\nTrack: $track";
+                if [ $2 = "album" ]; then
+                    _args=${array[@]:2:$len};
+                    Q=$_args;
+
+                    echo $bold$green"Searching albums for: $Q";
+
+                    SPTFY_URI=$( \
+                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=album&limit=1" -H "Accept: application/json" \
+                        | grep -E -o "spotify:album:[a-zA-Z0-9]+" -m 1 \
+                    )
+
+                elif [ $2 = "artist" ]; then
+                    _args=${array[@]:2:$len};
+                    Q=$_args;
+
+                    echo $bold$green"Searching artists for: $Q";
+
+                    SPTFY_URI=$( \
+                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=artist&limit=1" -H "Accept: application/json" \
+                        | grep -E -o "spotify:artist:[a-zA-Z0-9]+" -m 1 \
+                    )
+
+                elif [ $2 = "list" ]; then
+                    _args=${array[@]:2:$len};
+                    Q=$_args;
+
+                    echo $bold$green"Searching playlists for: $Q";
+
+                    results=$( \
+                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=playlist&limit=10" -H "Accept: application/json" \
+                        | grep -E -o "spotify:user:[a-zA-Z0-9]+:playlist:[a-zA-Z0-9]+" -m 10 \
+                    )
+
+                    count=$( \
+                        echo "$results" | grep -c "spotify:user" \
+                    )
+
+                    if [ "$count" -gt 0 ]; then
+                        random=$(( $RANDOM % $count));
+
+                        SPTFY_URI=$( \
+                            echo "$results" | awk -v random="$random" '/spotify:user:[a-zA-Z0-9]+:playlist:[a-zA-Z0-9]+/{i++}i==random{print; exit}' \
+                        )
+                    fi
+
+                else
+                    if [ $2 = "track" ]; then
+                        _args=${array[@]:2:$len};
+                    else
+                        _args=${array[@]:1:$len};
+                    fi
+                    Q=$_args;
+
+                    echo $bold$green"Searching tracks for: $Q";
+
+                    SPTFY_URI=$( \
+                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=track&limit=1" -H "Accept: application/json" \
+                        | grep -E -o "spotify:artist:[a-zA-Z0-9]+" -m 1 \
+                    )
+                fi
+
+                if [ "$SPTFY_URI" != "" ]; then
+                    echo $bold$green"Playing ($Q Search) -> Spotify URL: $SPTFY_URI";
+
+                    osascript -e "tell application \"Spotify\" to play track \"$SPTFY_URI\"";
+
+                else
+                    echo $bold$green"No results when searching for $Q";
+
+                fi
+
+            else
+
+                # play is the only param
+                echo $bold$green"Playing Spotify.";
+                osascript -e 'tell application "Spotify" to play';
             fi
-            break ;;
-
-        "play"    ) echo $bold$green"Playing Spotify.";
-            osascript -e 'tell application "Spotify" to play';
             break ;;
 
         "pause"    ) echo $bold$green"Pausing Spotify.";
             osascript -e 'tell application "Spotify" to pause';
             break ;;
 
-        "toggle"  ) state=`osascript -e 'tell application "Spotify" to player state as string'`;
-            osascript -e 'tell application "Spotify" to playpause';
-            if [ $state = "playing" ]; then
-              echo $bold$green"Pausing Spotify.";
-            else
-              echo $bold$green"Playing Spotify.";
-            fi
-            break ;;
+        "quit"    ) echo $bold$green"Quitting Spotify.";
+            osascript -e 'tell application "Spotify" to quit';
+            exit 1 ;;
 
         "next"    ) echo $bold$green"Going to next track." ;
             osascript -e 'tell application "Spotify" to next track';
@@ -107,59 +183,29 @@ while [ $# -gt 0 ]; do
             osascript -e "tell application \"Spotify\" to set sound volume to $newvol";
             break ;;
 
-        "search"    )
-
-            array=( $@ );
-            len=${#array[@]};
-            _args=${array[@]:1:$len};
-            Q=$_args;
-
-            echo $bold$green"Searching playlists for: $Q";
-
-            SPTFY_URI=$( \
-                curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=playlist&limit=1" -H "Accept: application/json" \
-                | grep -E -o "spotify:user:[a-zA-Z0-9]+:playlist:[a-zA-Z0-9]+" -m 1 \
-            )
-
-            echo $bold$green"Playing ($Q Search) -> Spotify URL: $SPTFY_URI";
-
-            osascript -e "tell application \"Spotify\" to play track \"$SPTFY_URI\"";
+        "toggle"  )
+            if [ $2 = "shuffle" ]; then
+                osascript -e "tell application \"Spotify\" to set shuffling to not shuffling";
+                curr=`osascript -e 'tell application "Spotify" to shuffling'`;
+                echo $bold$green"Spotify shuffling set to $curr";
+            elif [ $2 = "repeat" ]; then
+                osascript -e "tell application \"Spotify\" to set repeating to not repeating";
+                curr=`osascript -e 'tell application "Spotify" to repeating'`;
+                echo $bold$green"Spotify repeating set to $curr";
+            fi
             break ;;
 
-        "searchtrack"    )
+        "status" )
+            state=`osascript -e 'tell application "Spotify" to player state as string'`;
+            echo $bold$green"Spotify is currently $state.";
+            if [ $state = "playing" ]; then
+                artist=`osascript -e 'tell application "Spotify" to artist of current track as string'`;
+                album=`osascript -e 'tell application "Spotify" to album of current track as string'`;
+                track=`osascript -e 'tell application "Spotify" to name of current track as string'`;
 
-            array=( $@ );
-            len=${#array[@]};
-            _args=${array[@]:1:$len};
-            Q=$_args;
-
-            echo $bold$green"Searching tracks for: $Q";
-
-            SPTFY_URI=$( \
-                curl -s -G  --data-urlencode "q=$Q" ws.spotify.com/search/1/track \
-                | grep -E -o "spotify:track:[a-zA-Z0-9]+" -m 1 \
-            )
-
-            echo $bold$green"Playing ($Q Search) -> Spotify URL: $SPTFY_URI";
-
-            osascript -e "tell application \"Spotify\" to play track \"$SPTFY_URI\"";
+                echo -e $reset"Artist: $artist\nAlbum: $album\nTrack: $track";
+            fi
             break ;;
-
-        "pos"   ) echo $bold$green"Adjusting Spotify play position."
-            osascript -e "tell application \"Spotify\" to set player position to $2";
-            break;;
-
-        "shuffle"    )
-            osascript -e "tell application \"Spotify\" to set shuffling to not shuffling";
-            curr=`osascript -e 'tell application "Spotify" to shuffling'`;
-            echo $bold$green"Spotify shuffling set to $curr";
-            break;;
-
-        "repeat"    )
-            osascript -e "tell application \"Spotify\" to set repeating to not repeating";
-            curr=`osascript -e 'tell application "Spotify" to repeating'`;
-            echo $bold$green"Spotify repeating set to $curr";
-            break;;
 
         "share"     )
             url=`osascript -e 'tell application "Spotify" to spotify url of current track'`;
@@ -170,11 +216,13 @@ while [ $# -gt 0 ]; do
             echo "$url" | pbcopy
             break;;
 
-        "quit"    ) echo $bold$green"Quitting Spotify.";
-            osascript -e 'tell application "Spotify" to quit';
-            exit 1 ;;
+        "pos"   )
+            echo $bold$green"Adjusting Spotify play position."
+            osascript -e "tell application \"Spotify\" to set player position to $2";
+            break;;
 
-        "help" | * ) echo "help:";
+        "help" | * )
+            echo "help:";
             showHelp;
             break ;;
     esac
