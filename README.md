@@ -1,55 +1,56 @@
-shpotify: A command-line interface to Spotify
-=============================================
+# shpotify
 
-This is a simple Bash/Apple script to control Spotify from the command
-line on a Mac.
+**shpotify** is a simple Bash/Apple script to control Spotify from the
+command line on a Mac.
 
 In order to use it:
 
-1. Fetch a copy of this repository and make sure the `spotify` file in
-   this folder is executable:
+1. Fetch a copy of this repository, either with git or [download the
+   zip archive](https://github.com/hnarayanan/shpotify/archive/master.zip).
 
-````
-chmod +x spotify
-````
+2. Navigate to the folder where you fetched the repository (unzip if
+   needed) and make sure the file called `spotify` is executable:
 
-2. Copy the file to a convenient location in your `PATH`.
+       cd shpotify
+       chmod +x spotify
 
-3. Run it by typing one of the following commands:
+3. Copy the file `spotify` to a convenient location in your `PATH`, or
+   set your `PATH` to include the folder where the file is located.
 
-````
-spotify play                    Resumes playback where Spotify last left off
-spotify play [song name]        Searches for a song by name and plays it
-spotify pause                   Pauses Spotify playback
-spotify quit                    Stops playback and quits Spotify
-spotify next                    Skips to the next track in the playlist
-spotify prev                    Returns to the previous track in the playlist
+4. Run it by typing one of the following commands:
 
-spotify vol up                  Increase the volume by 10%
-spotify vol down                Decrease the volume by 10%
-spotify vol [value]             Set the volume to a value between 0 and 100
+   ````
+   spotify play                      Resumes playback where Spotify last left off
+   spotify play [song name]          Searches for a song by name and plays it
+   spotify play album [album name]   Searches for an album by name and plays it
+   spotify play artist [artist name] Searches for an artist by name and plays it
+   spotify play list [playlist name] Searches for a playlist by name and plays it
 
-spotify status                  Shows the current play status including track details
-spotify share                   Shows the current track URL and copies it to the clipboard for sharing
+   spotify next                      Skips to the next track in the playlist
+   spotify prev                      Returns to the previous track in the playlist
+   spotify pos [time]		     Jump to a specific time in the currently playing track (in seconds)
+   spotify pause                     Pauses Spotify playback
+   spotify quit                      Stops playback and quits Spotify
 
-spotify toggle shuffle          Toggles shuffle playback mode
-spotify toggle repeat           Toggles repeat playback mode
+   spotify vol up                    Increase the volume by 10%
+   spotify vol down                  Decrease the volume by 10%
+   spotify vol [amount]              Set the volume to an amount between 0 and 100
 
-Experimental and need more thought:
+   spotify status                    Shows the current play status including track details
+   spotify share                     Shows the current track URL and copies it to the clipboard for sharing
 
-spotify play <track> [song name] -- The word track is optional and is the default
-spotify play album [album name]
-spotify play artist [artist name]
-spotify play list [playlist name]
+   spotify toggle shuffle            Toggles shuffle playback mode
+   spotify toggle repeat             Toggles repeat playback mode
 
-
-spotify pos [value]             Needs better interface, could it be folded as part of 'play'?
-
-````
+   ````
 
 Copyright (c) 2012–2015 Harish Narayanan <mail@harishnarayanan.org>
 
-Contains helpful contributions from Jorge Colindres, Thomas Pritchard and iLan Epstein(@thepuzzlemaster).
+This software contains numerous helpful contributions from:
+
+Jorge Colindres
+Thomas Pritchard
+iLan Epstein
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
