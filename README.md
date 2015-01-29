@@ -41,7 +41,6 @@ In order to use it:
 
    spotify toggle shuffle            Toggles shuffle playback mode
    spotify toggle repeat             Toggles repeat playback mode
-
    ````
 
 ## Authors
