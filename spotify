@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-# Copyright (c) 2012--2014 Harish Narayanan <mail@harishnarayanan.org>
-# Contains helpful contributions from Jorge Colindres and Thomas Pritchard.
+# Copyright (c) 2012--2015 Harish Narayanan <mail@harishnarayanan.org>
+#
+# Contains numerous helpful contributions from Jorge Colindres, Thomas
+# Pritchard and iLan Epstein.
 
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation files
@@ -28,29 +30,28 @@ showHelp () {
     echo "  `basename $0` <command>";
     echo;
     echo "Commands:";
+    echo;
     echo "  play                            # Resume playback where Spotify last left off.";
-    echo "  play [song name]                # Searches for a song by name and plays it.";
-    echo "  pause                           # Pause Spotify.";
-    echo "  quit                            # Quit Spotify.";
-    echo "  next                            # Go to the next track.";
-    echo "  prev                            # Go to the previous track.";
-
-    echo "  vol up                          # Increase the volume by 10%.";
-    echo "  vol down                        # Decrease the volume by 10%.";
-    echo "  vol [value]                     # Set the volume to a value between 0 and 100.";
-
-    echo "  status                          # Shows Spotify's status and current track details.";
-    echo "  share                           # Copies the current track share URL to clipboard."
-
+    echo "  play [song name]                # Finds a song by name and plays it.";
+    echo "  play album [album name]         # Finds an album by name and plays it.";
+    echo "  play artist [artist name]       # Finds an artist by name and plays it.";
+    echo "  play list [playlist name]       # Finds a playlist by name and plays it.";
+    echo;
+    echo "  next                            # Skips to the next song in a playlist.";
+    echo "  prev                            # Returns to the previous song in a playlist.";
+    echo "  pos [time]                      # Jump to a specific time (in seconds) in the current song.";
+    echo "  pause                           # Pauses Spotify playback.";
+    echo "  quit                            # Stops playback and quits Spotify.";
+    echo;
+    echo "  vol up                          # Increases the volume by 10%.";
+    echo "  vol down                        # Decreases the volume by 10%.";
+    echo "  vol [amount]                    # Sets the volume to an amount between 0 and 100.";
+    echo;
+    echo "  status                          # Shows the play status, including the current song details.";
+    echo "  share                           # Shows and copies the current song URL to the clipboard for sharing."
+    echo;
     echo "  toggle shuffle                  # Toggle shuffle playback mode.";
     echo "  toggle repeat                   # Toggle repeat playback mode.";
-
-    echo "  play <track> [song name]        # The word track is optional and is the default";
-    echo "  play album [album name]         # Search for and start playing an album by name.";
-    echo "  play artist [artist name]       # Search for and start playing an artist by name.";
-    echo "  play list [playlist name]       # Search for and start playing a playlist by name.";
-
-    echo "  pos [#]                         # Set Spotify's play position in seconds.";
 }
 
 if [ $# = 0 ]; then
@@ -222,7 +223,6 @@ while [ $# -gt 0 ]; do
             break;;
 
         "help" | * )
-            echo "help:";
             showHelp;
             break ;;
     esac
