@@ -14,26 +14,26 @@ line on a Mac. In order to use it:
 3. Run it by typing one of the following commands:
 
 ````
-spotify play			Resumes playback where Spotify last left off
-spotify play [song name]	Searches for a song by name and plays it
-spotify pause	   		Pauses Spotify playback
-spotify quit			Stops playback and quits Spotify
-spotify next			Skips to the next track in the playlist
-spotify prev			Returns to the previous track in the playlist
+spotify play                    Resumes playback where Spotify last left off
+spotify play [song name]        Searches for a song by name and plays it
+spotify pause                   Pauses Spotify playback
+spotify quit                    Stops playback and quits Spotify
+spotify next                    Skips to the next track in the playlist
+spotify prev                    Returns to the previous track in the playlist
 
-spotify vol up			Increase the volume by 10%
-spotify vol down		Decrease the volume by 10%
-spotify vol [value]		Set the volume to a value between 0 and 100
+spotify vol up                  Increase the volume by 10%
+spotify vol down                Decrease the volume by 10%
+spotify vol [value]             Set the volume to a value between 0 and 100
 
-spotify status			Shows the current play status including track details
-spotify share			Shows the current track URL and copies it to the clipboard for sharing
+spotify status                  Shows the current play status including track details
+spotify share                   Shows the current track URL and copies it to the clipboard for sharing
 
-spotify toggle shuffle		Toggles shuffle playback mode
-spotify toggle repeat		Toggles repeat playback mode
+spotify toggle shuffle          Toggles shuffle playback mode
+spotify toggle repeat           Toggles repeat playback mode
 
 Need better interfaces:
 Album and playlist playback etc.
-spotify pos [value]		Needs better interface
+spotify pos [value]             Needs better interface
 
 ````
 
