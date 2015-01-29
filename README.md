@@ -1,7 +1,7 @@
 # shpotify
 
-**shpotify** is a simple Bash/Apple script to control Spotify from the
-command line on a Mac.
+*shpotify* is a simple Bash/Apple script to control
+ [Spotify](https://www.spotify.com) from the command line on a Mac.
 
 In order to use it:
 
@@ -29,7 +29,7 @@ In order to use it:
 
    spotify next                      Skips to the next track in the playlist
    spotify prev                      Returns to the previous track in the playlist
-   spotify pos [time]		     Jump to a specific time in the currently playing track (in seconds)
+   spotify pos [time]                Jump to a specific time (in seconds) in the currently playing track
    spotify pause                     Pauses Spotify playback
    spotify quit                      Stops playback and quits Spotify
 
@@ -45,17 +45,20 @@ In order to use it:
 
    ````
 
-## Authors and copyright
+## Authors
 
-shpotify is Copyright (c) 2012–2015 Harish Narayanan <mail@harishnarayanan.org>
+shpotify is written and maintained by [Harish
+Narayanan](https://harishnarayanan.org).
 
-This software contains numerous helpful contributions from:
+It contains numerous helpful contributions from:
 
 * Jorge Colindres
 * Thomas Pritchard
 * iLan Epstein
 
-## License
+## Copyright and license
+
+Copyright (c) 2012–2015 [Harish Narayanan](https://harishnarayanan.org)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
