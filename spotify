@@ -80,7 +80,7 @@ while [ $# -gt 0 ]; do
                     echo $bold$green"Searching albums for: $Q";
 
                     SPTFY_URI=$( \
-                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=album&limit=1" -H "Accept: application/json" \
+                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=album&limit=1&offset=0" -H "Accept: application/json" \
                         | grep -E -o "spotify:album:[a-zA-Z0-9]+" -m 1 \
                     )
 
@@ -91,7 +91,7 @@ while [ $# -gt 0 ]; do
                     echo $bold$green"Searching artists for: $Q";
 
                     SPTFY_URI=$( \
-                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=artist&limit=1" -H "Accept: application/json" \
+                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=artist&limit=1&offset=0" -H "Accept: application/json" \
                         | grep -E -o "spotify:artist:[a-zA-Z0-9]+" -m 1 \
                     )
 
@@ -102,7 +102,7 @@ while [ $# -gt 0 ]; do
                     echo $bold$green"Searching playlists for: $Q";
 
                     results=$( \
-                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=playlist&limit=10" -H "Accept: application/json" \
+                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=playlist&limit=10&offset=0" -H "Accept: application/json" \
                         | grep -E -o "spotify:user:[a-zA-Z0-9]+:playlist:[a-zA-Z0-9]+" -m 10 \
                     )
 
@@ -129,7 +129,7 @@ while [ $# -gt 0 ]; do
                     echo $bold$green"Searching tracks for: $Q";
 
                     SPTFY_URI=$( \
-                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=track&limit=1" -H "Accept: application/json" \
+                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=track&limit=1&offset=0" -H "Accept: application/json" \
                         | grep -E -o "spotify:track:[a-zA-Z0-9]+" -m 1 \
                     )
                 fi
