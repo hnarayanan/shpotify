@@ -18,11 +18,10 @@ In order to use it:
 3. Copy the file `spotify` to a convenient location in your `PATH`, or
    set your `PATH` to include the folder where the file is located.
 
-4. Run it by typing one of the following commands:
-
+4. You can now use it to control Spotify with the following commands:
    ````
    spotify play                      Resumes playback where Spotify last left off
-   spotify play [song name]          Finds a song by name and plays it
+   spotify play [track name]         Finds a track by name and plays it
    spotify play album [album name]   Finds an album by name and plays it
    spotify play artist [artist name] Finds an artist by name and plays it
    spotify play list [playlist name] Finds a playlist by name and plays it
