@@ -10,9 +10,10 @@ In order to use it:
 
 2. Navigate to the folder where you fetched the repository (unzip if
    needed) and make sure the file called `spotify` is executable:
-
-       cd shpotify
-       chmod +x spotify
+   ````
+   cd shpotify
+   chmod +x spotify
+   ````
 
 3. Copy the file `spotify` to a convenient location in your `PATH`, or
    set your `PATH` to include the folder where the file is located.
@@ -44,13 +45,17 @@ In order to use it:
 
    ````
 
-Copyright (c) 2012–2015 Harish Narayanan <mail@harishnarayanan.org>
+## Authors and copyright
+
+shpotify is Copyright (c) 2012–2015 Harish Narayanan <mail@harishnarayanan.org>
 
 This software contains numerous helpful contributions from:
 
-Jorge Colindres
-Thomas Pritchard
-iLan Epstein
+* Jorge Colindres
+* Thomas Pritchard
+* iLan Epstein
+
+## License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
