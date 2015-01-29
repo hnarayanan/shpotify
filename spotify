@@ -130,7 +130,7 @@ while [ $# -gt 0 ]; do
 
                     SPTFY_URI=$( \
                         curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=track&limit=1" -H "Accept: application/json" \
-                        | grep -E -o "spotify:artist:[a-zA-Z0-9]+" -m 1 \
+                        | grep -E -o "spotify:track:[a-zA-Z0-9]+" -m 1 \
                     )
                 fi
 
