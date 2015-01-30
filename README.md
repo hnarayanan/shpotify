@@ -3,7 +3,10 @@
 *shpotify* is a simple Bash/Apple script to control
  [Spotify](https://www.spotify.com) from the command line on a Mac.
 
-In order to use it:
+## Installation and usage
+
+You can easily get started with shpotify by just following a few easy
+steps:
 
 1. Fetch a copy of this repository, either with git or [download the
    zip archive](https://github.com/hnarayanan/shpotify/archive/master.zip).
@@ -18,7 +21,8 @@ In order to use it:
 3. Copy the file `spotify` to a convenient location in your `PATH`, or
    set your `PATH` to include the folder where the file is located.
 
-4. You can now use it to control Spotify with the following commands:
+4. That's it! You can now use it to control Spotify with the following
+   commands:
    ````
    spotify play                      Resumes playback where Spotify last left off
    spotify play [song name]          Finds a song by name and plays it
