@@ -28,7 +28,6 @@
 showHelp () {
     echo "Usage:";
     echo "  `basename $0` <command>";
-    echo;
     echo "Commands:";
     echo;
     echo "  play                            # Resume playback where Spotify last left off.";

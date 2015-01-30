@@ -43,20 +43,28 @@ In order to use it:
    spotify toggle repeat             Toggles repeat playback mode
    ````
 
-## Authors
+## Authors and contributing
 
-shpotify is written and maintained by [Harish
+shpotify is primarily written and maintained by [Harish
 Narayanan](https://harishnarayanan.org).
 
-It contains numerous helpful contributions from:
+But it is also an open source project that contains numerous helpful
+contributions from many kind people, including:
 
 * Jorge Colindres
 * Thomas Pritchard
 * iLan Epstein
 
+If you're interested in contributing too, please consider addressing
+some of the [issues people have previously
+reported](https://github.com/hnarayanan/shpotify/issues) and
+[submitting a pull
+request](https://help.github.com/articles/using-pull-requests/). **Thank
+you!**
+
 ## Copyright and license
 
-Copyright (c) 2012–2015 [Harish Narayanan](https://harishnarayanan.org)
+Copyright (c) 2012–2015 [Harish Narayanan](https://harishnarayanan.org).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
