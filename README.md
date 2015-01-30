@@ -5,7 +5,7 @@
 
 ## Installation and usage
 
-You can easily get started with shpotify by just following a few easy
+You can quickly get started with shpotify by following a few simple
 steps:
 
 1. Fetch a copy of this repository, either with git or [download the
