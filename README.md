@@ -52,8 +52,8 @@ steps:
 shpotify is primarily written and maintained by [Harish
 Narayanan](https://harishnarayanan.org).
 
-But since it's an open source project, it contains numerous helpful
-contributions from many kind people, including:
+Since it's an open source project, it contains numerous contributions
+from many helpful people, including:
 
 * Jorge Colindres
 * Thomas Pritchard
