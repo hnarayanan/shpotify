@@ -53,7 +53,7 @@ showHelp () {
     echo "  toggle repeat                   # Toggle repeat playback mode.";
 }
 
-fancyEcho(){
+cecho(){
     bold=$(tput bold);
     green=$(tput setaf 2);
     reset=$(tput sgr0);
@@ -85,7 +85,7 @@ while [ $# -gt 0 ]; do
                     _args=${array[@]:2:$len};
                     Q=$_args;
 
-                    fancyEcho "Searching albums for: $Q";
+                    cecho "Searching albums for: $Q";
 
                     SPTFY_URI=$( \
                         curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=album&limit=1&offset=0" -H "Accept: application/json" \
@@ -96,7 +96,7 @@ while [ $# -gt 0 ]; do
                     _args=${array[@]:2:$len};
                     Q=$_args;
 
-                    fancyEcho "Searching artists for: $Q";
+                    cecho "Searching artists for: $Q";
 
                     SPTFY_URI=$( \
                         curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=artist&limit=1&offset=0" -H "Accept: application/json" \
@@ -107,7 +107,7 @@ while [ $# -gt 0 ]; do
                     _args=${array[@]:2:$len};
                     Q=$_args;
 
-                    fancyEcho "Searching playlists for: $Q";
+                    cecho "Searching playlists for: $Q";
 
                     results=$( \
                         curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=playlist&limit=10&offset=0" -H "Accept: application/json" \
@@ -134,7 +134,7 @@ while [ $# -gt 0 ]; do
                     fi
                     Q=$_args;
 
-                    fancyEcho "Searching tracks for: $Q";
+                    cecho "Searching tracks for: $Q";
 
                     SPTFY_URI=$( \
                         curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=track&limit=1&offset=0" -H "Accept: application/json" \
@@ -143,35 +143,35 @@ while [ $# -gt 0 ]; do
                 fi
 
                 if [ "$SPTFY_URI" != "" ]; then
-                    fancyEcho "Playing ($Q Search) -> Spotify URL: $SPTFY_URI";
+                    cecho "Playing ($Q Search) -> Spotify URL: $SPTFY_URI";
 
                     osascript -e "tell application \"Spotify\" to play track \"$SPTFY_URI\"";
 
                 else
-                    fancyEcho "No results when searching for $Q";
+                    cecho "No results when searching for $Q";
                 fi
 
             else
 
                 # play is the only param
-                fancyEcho "Playing Spotify.";
+                cecho "Playing Spotify.";
                 osascript -e 'tell application "Spotify" to play';
             fi
             break ;;
 
-        "pause"    ) fancyEcho "Pausing Spotify.";
+        "pause"    ) cecho "Pausing Spotify.";
             osascript -e 'tell application "Spotify" to pause';
             break ;;
 
-        "quit"    ) fancyEcho "Quitting Spotify.";
+        "quit"    ) cecho "Quitting Spotify.";
             osascript -e 'tell application "Spotify" to quit';
             exit 1 ;;
 
-        "next"    ) fancyEcho "Going to next track." ;
+        "next"    ) cecho "Going to next track." ;
             osascript -e 'tell application "Spotify" to next track';
             break ;;
 
-        "prev"    ) fancyEcho "Going to previous track.";
+        "prev"    ) cecho "Going to previous track.";
             osascript -e 'tell application "Spotify" to previous track';
             break ;;
 
@@ -187,7 +187,7 @@ while [ $# -gt 0 ]; do
               text="to $2";
             fi
 
-            fancyEcho "Changing Spotify volume level $text.";
+            cecho "Changing Spotify volume level $text.";
             osascript -e "tell application \"Spotify\" to set sound volume to $newvol";
             break ;;
 
@@ -195,17 +195,17 @@ while [ $# -gt 0 ]; do
             if [ $2 = "shuffle" ]; then
                 osascript -e "tell application \"Spotify\" to set shuffling to not shuffling";
                 curr=`osascript -e 'tell application "Spotify" to shuffling'`;
-                fancyEcho "Spotify shuffling set to $curr";
+                cecho "Spotify shuffling set to $curr";
             elif [ $2 = "repeat" ]; then
                 osascript -e "tell application \"Spotify\" to set repeating to not repeating";
                 curr=`osascript -e 'tell application "Spotify" to repeating'`;
-                fancyEcho "Spotify repeating set to $curr";
+                cecho "Spotify repeating set to $curr";
             fi
             break ;;
 
         "status" )
             state=`osascript -e 'tell application "Spotify" to player state as string'`;
-            fancyEcho "Spotify is currently $state.";
+            cecho "Spotify is currently $state.";
             if [ $state = "playing" ]; then
                 artist=`osascript -e 'tell application "Spotify" to artist of current track as string'`;
                 album=`osascript -e 'tell application "Spotify" to album of current track as string'`;
@@ -220,12 +220,12 @@ while [ $# -gt 0 ]; do
             remove='spotify:track:'
             url=${url#$remove}
             url="http://open.spotify.com/track/$url"
-            fancyEcho "Share URL: $url";
+            cecho "Share URL: $url";
             echo "$url" | pbcopy
             break;;
 
         "pos"   )
-            fancyEcho "Adjusting Spotify play position."
+            cecho "Adjusting Spotify play position."
             osascript -e "tell application \"Spotify\" to set player position to $2";
             break;;
 
