@@ -58,6 +58,7 @@ from many helpful people, including:
 * Jorge Colindres
 * Thomas Pritchard
 * iLan Epstein
+* Gabriele Bonetti
 
 If you're interested in contributing too, please consider addressing
 some of the [issues people have previously
