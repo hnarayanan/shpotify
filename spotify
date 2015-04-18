@@ -59,7 +59,7 @@ cecho(){
     bold=$(tput bold);
     green=$(tput setaf 2);
     reset=$(tput sgr0);
-    echo $bold$green$1$reset;
+    echo $bold$green"$1"$reset;
 }
 
 if [ $# = 0 ]; then
@@ -222,6 +222,38 @@ while [ $# -gt 0 ]; do
 
                 echo -e $reset"Artist: $artist\nAlbum: $album\nTrack: $track";
             fi
+            break ;;
+
+        "info" )
+            info=`osascript -e 'tell application "Spotify" 
+                set tM to round (duration of current track / 60) rounding down
+                set tS to duration of current track mod 60
+                set pos to player position as text
+                set myTime to tM as text & "min " & tS as text & "s"
+                set nM to round (player position / 60) rounding down
+                set nS to round (player position mod 60) rounding down
+                set nowAt to nM as text & "min " & nS as text & "s"
+                set info to "" & "\nArtist:         " & artist of current track
+                set info to info & "\nTrack:          " & name of current track
+                set info to info & "\nAlbum Artist:   " & album artist of current track
+                set info to info & "\nAlbum:          " & album of current track
+                set info to info & "\nSeconds:        " & duration of current track
+                set info to info & "\nSeconds played: " & pos
+                set info to info & "\nDuration:       " & mytime 
+                set info to info & "\nNow at:         " & nowAt
+                set info to info & "\nPlayed Count:   " & played count of current track
+                set info to info & "\nTrack Number:   " & track number of current track
+                set info to info & "\nPopularity:     " & popularity of current track
+                set info to info & "\nId:             " & id of current track
+                set info to info & "\nSpotify URL:    " & spotify url of current track
+                set info to info & "\nArtwork:        " & artwork of current track
+                set info to info & "\nPlayer:         " & player state
+                set info to info & "\nVolume:         " & sound volume
+                set info to info & "\nShuffle:        " & shuffling
+                set info to info & "\nRepeating:      " & repeating
+            end tell
+            return info'`
+            cecho "$info";
             break ;;
 
         "share"     )
