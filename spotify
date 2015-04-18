@@ -76,11 +76,12 @@ while [ $# -gt 0 ]; do
     case $arg in
         "play"    )
             if [ $# != 1 ]; then
-                # There are additional parameters
-                #get the length of arguments
+                # There are additional arguments, so find out how many
                 array=( $@ );
                 len=${#array[@]};
+                SPOTIFY_SEARCH_API="https://api.spotify.com/v1/search"
                 SPTFY_URI="";
+
 
                 if [ "$2" = "album" ]; then
                     _args=${array[@]:2:$len};
@@ -89,7 +90,7 @@ while [ $# -gt 0 ]; do
                     cecho "Searching albums for: $Q";
 
                     SPTFY_URI=$( \
-                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=album&limit=1&offset=0" -H "Accept: application/json" \
+                        curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=album&limit=1&offset=0" -H "Accept: application/json" \
                         | grep -E -o "spotify:album:[a-zA-Z0-9]+" -m 1 \
                     )
 
@@ -100,7 +101,7 @@ while [ $# -gt 0 ]; do
                     cecho "Searching artists for: $Q";
 
                     SPTFY_URI=$( \
-                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=artist&limit=1&offset=0" -H "Accept: application/json" \
+                        curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=artist&limit=1&offset=0" -H "Accept: application/json" \
                         | grep -E -o "spotify:artist:[a-zA-Z0-9]+" -m 1 \
                     )
 
@@ -111,7 +112,7 @@ while [ $# -gt 0 ]; do
                     cecho "Searching playlists for: $Q";
 
                     results=$( \
-                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=playlist&limit=10&offset=0" -H "Accept: application/json" \
+                        curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=playlist&limit=10&offset=0" -H "Accept: application/json" \
                         | grep -E -o "spotify:user:[a-zA-Z0-9]+:playlist:[a-zA-Z0-9]+" -m 10 \
                     )
 
@@ -138,7 +139,7 @@ while [ $# -gt 0 ]; do
                     cecho "Searching tracks for: $Q";
 
                     SPTFY_URI=$( \
-                        curl -s -G "https://api.spotify.com/v1/search" --data-urlencode "q=$Q" -d "type=track&limit=1&offset=0" -H "Accept: application/json" \
+                        curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=track&limit=1&offset=0" -H "Accept: application/json" \
                         | grep -E -o "spotify:track:[a-zA-Z0-9]+" -m 1 \
                     )
                 fi
