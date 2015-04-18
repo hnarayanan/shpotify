@@ -80,7 +80,7 @@ while [ $# -gt 0 ]; do
                 array=( $@ );
                 len=${#array[@]};
                 SPOTIFY_SEARCH_API="https://api.spotify.com/v1/search"
-                SPTFY_URI="";
+                SPOTIFY_PLAY_URI="";
 
 
                 if [ "$2" = "album" ]; then
@@ -89,7 +89,7 @@ while [ $# -gt 0 ]; do
 
                     cecho "Searching albums for: $Q";
 
-                    SPTFY_URI=$( \
+                    SPOTIFY_PLAY_URI=$( \
                         curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=album&limit=1&offset=0" -H "Accept: application/json" \
                         | grep -E -o "spotify:album:[a-zA-Z0-9]+" -m 1 \
                     )
@@ -100,7 +100,7 @@ while [ $# -gt 0 ]; do
 
                     cecho "Searching artists for: $Q";
 
-                    SPTFY_URI=$( \
+                    SPOTIFY_PLAY_URI=$( \
                         curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=artist&limit=1&offset=0" -H "Accept: application/json" \
                         | grep -E -o "spotify:artist:[a-zA-Z0-9]+" -m 1 \
                     )
@@ -123,7 +123,7 @@ while [ $# -gt 0 ]; do
                     if [ "$count" -gt 0 ]; then
                         random=$(( $RANDOM % $count));
 
-                        SPTFY_URI=$( \
+                        SPOTIFY_PLAY_URI=$( \
                             echo "$results" | awk -v random="$random" '/spotify:user:[a-zA-Z0-9]+:playlist:[a-zA-Z0-9]+/{i++}i==random{print; exit}' \
                         )
                     fi
@@ -138,16 +138,16 @@ while [ $# -gt 0 ]; do
 
                     cecho "Searching tracks for: $Q";
 
-                    SPTFY_URI=$( \
+                    SPOTIFY_PLAY_URI=$( \
                         curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=track&limit=1&offset=0" -H "Accept: application/json" \
                         | grep -E -o "spotify:track:[a-zA-Z0-9]+" -m 1 \
                     )
                 fi
 
-                if [ "$SPTFY_URI" != "" ]; then
-                    cecho "Playing ($Q Search) -> Spotify URL: $SPTFY_URI";
+                if [ "$SPOTIFY_PLAY_URI" != "" ]; then
+                    cecho "Playing ($Q Search) -> Spotify URL: $SPOTIFY_PLAY_URI";
 
-                    osascript -e "tell application \"Spotify\" to play track \"$SPTFY_URI\"";
+                    osascript -e "tell application \"Spotify\" to play track \"$SPOTIFY_PLAY_URI\"";
 
                 else
                     cecho "No results when searching for $Q";
