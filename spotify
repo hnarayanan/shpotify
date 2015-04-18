@@ -27,30 +27,32 @@
 
 showHelp () {
     echo "Usage:";
+    echo;
     echo "  `basename $0` <command>";
+    echo;
     echo "Commands:";
     echo;
-    echo "  play                            # Resume playback where Spotify last left off.";
-    echo "  play [song name]                # Finds a song by name and plays it.";
-    echo "  play album [album name]         # Finds an album by name and plays it.";
-    echo "  play artist [artist name]       # Finds an artist by name and plays it.";
-    echo "  play list [playlist name]       # Finds a playlist by name and plays it.";
+    echo "  play                         # Resume playback where Spotify last left off.";
+    echo "  play [song name]             # Finds a song by name and plays it.";
+    echo "  play album [album name]      # Finds an album by name and plays it.";
+    echo "  play artist [artist name]    # Finds an artist by name and plays it.";
+    echo "  play list [playlist name]    # Finds a playlist by name and plays it.";
     echo;
-    echo "  next                            # Skips to the next song in a playlist.";
-    echo "  prev                            # Returns to the previous song in a playlist.";
-    echo "  pos [time]                      # Jump to a specific time (in seconds) in the current song.";
-    echo "  pause                           # Pauses Spotify playback.";
-    echo "  quit                            # Stops playback and quits Spotify.";
+    echo "  next                         # Skips to the next song in a playlist.";
+    echo "  prev                         # Returns to the previous song in a playlist.";
+    echo "  pos [time]                   # Jump to a specific time (in seconds) in the current song.";
+    echo "  pause                        # Pauses Spotify playback.";
+    echo "  quit                         # Stops playback and quits Spotify.";
     echo;
-    echo "  vol up                          # Increases the volume by 10%.";
-    echo "  vol down                        # Decreases the volume by 10%.";
-    echo "  vol [amount]                    # Sets the volume to an amount between 0 and 100.";
+    echo "  vol up                       # Increases the volume by 10%.";
+    echo "  vol down                     # Decreases the volume by 10%.";
+    echo "  vol [amount]                 # Sets the volume to an amount between 0 and 100.";
     echo;
-    echo "  status                          # Shows the play status, including the current song details.";
-    echo "  share                           # Shows and copies the current song URL to the clipboard for sharing."
+    echo "  status                       # Shows the play status, including the current song details.";
+    echo "  share                        # Shows and copies the current song URL to the clipboard for sharing."
     echo;
-    echo "  toggle shuffle                  # Toggle shuffle playback mode.";
-    echo "  toggle repeat                   # Toggle repeat playback mode.";
+    echo "  toggle shuffle               # Toggle shuffle playback mode.";
+    echo "  toggle repeat                # Toggle repeat playback mode.";
 }
 
 cecho(){
@@ -158,14 +160,14 @@ while [ $# -gt 0 ]; do
             fi
             break ;;
 
-        "pause"    ) 
+        "pause"    )
             state=`osascript -e 'tell application "Spotify" to player state as string'`;
-            if [ $state = "playing" ]; then            
+            if [ $state = "playing" ]; then
               cecho "Pausing Spotify.";
-            else 
+            else
               cecho "Playing Spotify.";
-            fi 
-            
+            fi
+
             osascript -e 'tell application "Spotify" to playpause';
             break ;;
 
