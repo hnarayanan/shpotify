@@ -51,8 +51,8 @@ showHelp () {
     echo "  status                       # Shows the play status, including the current song details.";
     echo "  share                        # Shows and copies the current song URL to the clipboard for sharing."
     echo;
-    echo "  toggle toggle shuffle        # Toggle shuffle playback mode.";
-    echo "  toggle toggle repeat         # Toggle repeat playback mode.";
+    echo "  toggle shuffle               # Toggle shuffle playback mode.";
+    echo "  toggle repeat                # Toggle repeat playback mode.";
 }
 
 cecho(){
