@@ -87,34 +87,73 @@ while [ $# -gt 0 ]; do
                     _args=${array[@]:2:$len};
                     Q=$_args;
 
-                    cecho "Searching albums for: $Q";
+                    if [[ "$Q" =~ "http" ]]; then
+                        cecho "$Q find";
+                        re="album/([a-zA-Z0-9]*)"
+                        if [[ "$Q" =~ $re ]]; then 
+                            SPOTIFY_PLAY_URI=$( \
+                                echo "spotify:album:${BASH_REMATCH[1]}" \
+                            )
+                        fi
 
-                    SPOTIFY_PLAY_URI=$( \
-                        curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=album&limit=1&offset=0" -H "Accept: application/json" \
-                        | grep -E -o "spotify:album:[a-zA-Z0-9]+" -m 1 \
-                    )
+                    elif [[ "$Q" =~ "spotify:album" ]]; then
+                        SPOTIFY_PLAY_URI=$Q;
+                    else
+                        cecho "Searching albums for: $Q";
+
+                        SPOTIFY_PLAY_URI=$( \
+                            curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=album&limit=1&offset=0" -H "Accept: application/json" \
+                            | grep -E -o "spotify:album:[a-zA-Z0-9]+" -m 1 \
+                        )
+                    fi
 
                 elif [ "$2" = "artist" ]; then
                     _args=${array[@]:2:$len};
                     Q=$_args;
 
-                    cecho "Searching artists for: $Q";
+                    if [[ "$Q" =~ "http" ]]; then
+                        cecho "$Q find";
+                        re="artist/([a-zA-Z0-9]*)"
+                        if [[ "$Q" =~ $re ]]; then 
+                            SPOTIFY_PLAY_URI=$( \
+                                echo "spotify:artist:${BASH_REMATCH[1]}" \
+                            )
+                        fi
 
-                    SPOTIFY_PLAY_URI=$( \
-                        curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=artist&limit=1&offset=0" -H "Accept: application/json" \
-                        | grep -E -o "spotify:artist:[a-zA-Z0-9]+" -m 1 \
-                    )
+                    elif [[ "$Q" =~ "spotify:artist" ]]; then
+                        SPOTIFY_PLAY_URI=$Q;
+                    else
+                        cecho "Searching artists for: $Q";
+
+                        SPOTIFY_PLAY_URI=$( \
+                            curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=artist&limit=1&offset=0" -H "Accept: application/json" \
+                            | grep -E -o "spotify:artist:[a-zA-Z0-9]+" -m 1 \
+                        )
+                    fi
 
                 elif [ "$2" = "list" ]; then
                     _args=${array[@]:2:$len};
                     Q=$_args;
+                    
+                    if [[ "$Q" =~ "http" ]]; then
+                        cecho "$Q find";
+                        re="user/([a-zA-Z0-9]*)/playlist/([a-zA-Z0-9]*)"
+                        if [[ "$Q" =~ $re ]]; then 
+                            SPOTIFY_PLAY_URI=$( \
+                                echo "spotify:user:${BASH_REMATCH[1]}:playlist:${BASH_REMATCH[2]}" \
+                            )
+                        fi
 
-                    cecho "Searching playlists for: $Q";
+                    elif [[ "$Q" =~ "spotify:user" ]]; then
+                        SPOTIFY_PLAY_URI=$Q;
+                    else
+                        cecho "Searching playlists for: $Q";
 
-                    results=$( \
-                        curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=playlist&limit=10&offset=0" -H "Accept: application/json" \
-                        | grep -E -o "spotify:user:[a-zA-Z0-9]+:playlist:[a-zA-Z0-9]+" -m 10 \
-                    )
+                        results=$( \
+                            curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=playlist&limit=10&offset=0" -H "Accept: application/json" \
+                            | grep -E -o "spotify:user:[a-zA-Z0-9]+:playlist:[a-zA-Z0-9]+" -m 10 \
+                        )
+                    fi
 
                     count=$( \
                         echo "$results" | grep -c "spotify:user" \
