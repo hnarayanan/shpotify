@@ -128,6 +128,9 @@ while [ $# -gt 0 ]; do
                         )
                     fi
 
+                elif [ "$2" = "uri" ]; then
+                    SPTFY_URI=$( echo ${array[@]:2:$len} )
+
                 else
                     if [ "$2" = "track" ]; then
                         _args=${array[@]:2:$len};
