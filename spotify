@@ -37,6 +37,7 @@ showHelp () {
     echo "  play album [album name]      # Finds an album by name and plays it.";
     echo "  play artist [artist name]    # Finds an artist by name and plays it.";
     echo "  play list [playlist name]    # Finds a playlist by name and plays it.";
+    echo "  play uri [uri]               # Play songs from specific uri.";
     echo;
     echo "  next                         # Skips to the next song in a playlist.";
     echo "  prev                         # Returns to the previous song in a playlist.";
@@ -139,6 +140,9 @@ while [ $# -gt 0 ]; do
                             echo "$results" | awk -v random="$random" '/spotify:user:[a-zA-Z0-9]+:playlist:[a-zA-Z0-9]+/{i++}i==random{print; exit}' \
                         )
                     fi
+
+                elif [ "$2" = "uri" ]; then
+                    SPTFY_URI=$( echo ${array[@]:2:$len} )
 
                 else
                     if [ "$2" = "track" ]; then
