@@ -69,8 +69,12 @@ showStatus () {
         artist=`osascript -e 'tell application "Spotify" to artist of current track as string'`;
         album=`osascript -e 'tell application "Spotify" to album of current track as string'`;
         track=`osascript -e 'tell application "Spotify" to name of current track as string'`;
-
-        echo -e $reset"Artist: $artist\nAlbum: $album\nTrack: $track";
+        duration=`osascript -e 'tell application "Spotify" to duration of current track as string'`;
+        duration=$(echo "scale=2; $duration / 60 / 1000" | bc);
+        position=`osascript -e 'tell application "Spotify" to player position as string'`;
+        position=$(echo "scale=2; $position / 60" | bc | awk '{printf "%0.2f", $0}');
+        
+        echo -e $reset"Artist: $artist\nAlbum: $album\nTrack: $track \nPosition: $position / $duration";
     fi
 }
 
