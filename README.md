@@ -70,7 +70,7 @@ you!**
 
 ## Copyright and license
 
-Copyright (c) 2012–2015 [Harish Narayanan](https://harishnarayanan.org).
+Copyright (c) 2012–2016 [Harish Narayanan](https://harishnarayanan.org).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
