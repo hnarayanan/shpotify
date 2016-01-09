@@ -87,6 +87,11 @@ while [ $# -gt 0 ]; do
     arg=$1;
 
     case $arg in
+
+        "lyrics"    )
+            echo "lyrics";
+            break  ;;
+            
         "play"    )
             if [ $# != 1 ]; then
                 # There are additional arguments, so find out how many
