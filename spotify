@@ -83,7 +83,7 @@ showLyrics (){
     encoded_track=`perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$track"`
       echo -e $reset"Artist: $artist\nAlbum: $album\nTrack: $track";
     curl -s "http://makeitpersonal.co/lyrics?artist=$encoded_artist&title=$encoded_track"
-    echo "\n"
+    echo
 } 
 
 if [ $# = 0 ]; then
