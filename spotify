@@ -75,6 +75,17 @@ showStatus () {
     fi
 }
 
+showLyrics (){
+    artist=`osascript -e 'tell application "Spotify" to artist of current track as string'`;
+    album=`osascript -e 'tell application "Spotify" to album of current track as string'`;
+    track=`osascript -e 'tell application "Spotify" to name of current track as string'`;
+    encoded_artist=`perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$artist"`
+    encoded_track=`perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$track"`
+      echo -e $reset"Artist: $artist\nAlbum: $album\nTrack: $track";
+    curl -s "http://makeitpersonal.co/lyrics?artist=$encoded_artist&title=$encoded_track"
+    echo "\n"
+} 
+
 if [ $# = 0 ]; then
     showHelp;
 else
@@ -89,7 +100,7 @@ while [ $# -gt 0 ]; do
     case $arg in
 
         "lyrics"    )
-            echo "lyrics";
+            showLyrics;
             break  ;;
 
         "play"    )
