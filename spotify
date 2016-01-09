@@ -38,7 +38,6 @@ showHelp () {
     echo "  play artist [artist name]    # Finds an artist by name and plays it.";
     echo "  play list [playlist name]    # Finds a playlist by name and plays it.";
     echo;
-    echo "  lyrics                       # Show lyrics, if available. Service provided by makeitpersonal.co"; 
     echo "  next                         # Skips to the next song in a playlist.";
     echo "  prev                         # Returns to the previous song in a playlist.";
     echo "  pos [time]                   # Jump to a specific time (in seconds) in the current song.";
@@ -49,6 +48,7 @@ showHelp () {
     echo "  vol down                     # Decreases the volume by 10%.";
     echo "  vol [amount]                 # Sets the volume to an amount between 0 and 100.";
     echo;
+    echo "  lyrics                       # Show lyrics, if available. Service provided by makeitpersonal.co"; 
     echo "  status                       # Shows the play status, including the current song details.";
     echo "  share                        # Shows and copies the current song URL to the clipboard for sharing."
     echo;
@@ -91,7 +91,7 @@ while [ $# -gt 0 ]; do
         "lyrics"    )
             echo "lyrics";
             break  ;;
-            
+
         "play"    )
             if [ $# != 1 ]; then
                 # There are additional arguments, so find out how many
