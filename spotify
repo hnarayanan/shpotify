@@ -73,7 +73,7 @@ showStatus () {
         duration=$(echo "scale=2; $duration / 60 / 1000" | bc);
         position=`osascript -e 'tell application "Spotify" to player position as string'`;
         position=$(echo "scale=2; $position / 60" | bc | awk '{printf "%0.2f", $0}');
-        
+
         echo -e $reset"Artist: $artist\nAlbum: $album\nTrack: $track \nPosition: $position / $duration";
     fi
 }
@@ -99,7 +99,7 @@ while [ $# -gt 0 ]; do
                 SPOTIFY_PLAY_URI="";
 
                 searchAndPlay() {
-                    type="$1"        
+                    type="$1"
                     Q="$2"
 
                     cecho "Searching ${type}s for: $Q";
