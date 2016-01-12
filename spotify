@@ -47,6 +47,7 @@ showHelp () {
     echo "  vol up                       # Increases the volume by 10%.";
     echo "  vol down                     # Decreases the volume by 10%.";
     echo "  vol [amount]                 # Sets the volume to an amount between 0 and 100.";
+    echo "  vol show                     # Shows the current Spotify volume between 0 and 100.";
     echo;
     echo "  status                       # Shows the play status, including the current song details.";
     echo "  share                        # Shows and copies the current song URL to the clipboard for sharing."
@@ -188,7 +189,10 @@ while [ $# -gt 0 ]; do
         "vol"    )
             vol=`osascript -e 'tell application "Spotify" to sound volume as integer'`;
             text=$2;
-            if [ "$2" = "up" ]; then
+            if [ "$2" = "show" ]; then
+                cecho "Current Spotify volume level is $vol.";
+                break ;
+            elif [ "$2" = "up" ]; then
                 newvol=$(( vol+10 ));
             elif [ "$2" = "down" ]; then
                 newvol=$(( vol-10 ));
