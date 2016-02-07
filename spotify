@@ -28,7 +28,7 @@
 showHelp () {
     echo "Usage:";
     echo;
-    echo "  `basename $0` <command>";
+    echo "  `baseline $0` [--no-color|-p] <command>";
     echo;
     echo "Commands:";
     echo;
@@ -57,9 +57,11 @@ showHelp () {
 }
 
 cecho(){
-    bold=$(tput bold);
-    green=$(tput setaf 2);
-    reset=$(tput sgr0);
+    if [ ! $no_color ]; then
+        bold=$(tput bold);
+        green=$(tput setaf 2);
+        reset=$(tput sgr0);
+    fi
     echo $bold$green"$1"$reset;
 }
 
@@ -86,6 +88,10 @@ else
         osascript -e 'tell application "Spotify" to activate'
         sleep 2
     fi
+fi
+if [ $1 == "--no-color" ] || [ $1 == "-p" ]; then
+    no_color=1
+    shift
 fi
 while [ $# -gt 0 ]; do
     arg=$1;
