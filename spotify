@@ -195,21 +195,24 @@ while [ $# -gt 0 ]; do
             elif [ "$2" = "up" ]; then
                 if [ $vol -le 90 ]; then
                     newvol=$(( vol+10 ));
+                    cecho "Increasing Spotify volume to $newvol.";
                 else
                     newvol=100;
+                    cecho "Spotify volume level is at max.";
                 fi
             elif [ "$2" = "down" ]; then
                 if [ $vol -ge 10 ]; then
                     newvol=$(( vol-10 ));
+                    cecho "Reducing Spotify volume to $newvol.";
                 else
                     newvol=0;
+                    cecho "Spotify volume level is at min.";
                 fi
             elif [ $2 -gt 0 ]; then
                 newvol=$2;
                 text="to $2";
             fi
 
-            cecho "Changing Spotify volume level $text.";
             osascript -e "tell application \"Spotify\" to set sound volume to $newvol";
             break ;;
 
