@@ -49,6 +49,7 @@ showHelp () {
     echo "  vol [amount]                 # Sets the volume to an amount between 0 and 100.";
     echo "  vol show                     # Shows the current Spotify volume between 0 and 100.";
     echo;
+    echo "  lyrics                       # Show lyrics, if available. Service provided by makeitpersonal.co"; 
     echo "  status                       # Shows the play status, including the current song details.";
     echo "  share                        # Shows and copies the current song URL to the clipboard for sharing."
     echo;
@@ -79,6 +80,17 @@ showStatus () {
     fi
 }
 
+showLyrics (){
+    artist=`osascript -e 'tell application "Spotify" to artist of current track as string'`;
+    album=`osascript -e 'tell application "Spotify" to album of current track as string'`;
+    track=`osascript -e 'tell application "Spotify" to name of current track as string'`;
+    encoded_artist=`perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$artist"`
+    encoded_track=`perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$track"`
+      echo -e $reset"Artist: $artist\nAlbum: $album\nTrack: $track";
+    curl -s "http://makeitpersonal.co/lyrics?artist=$encoded_artist&title=$encoded_track"
+    echo
+} 
+
 if [ $# = 0 ]; then
     showHelp;
 else
@@ -91,6 +103,11 @@ while [ $# -gt 0 ]; do
     arg=$1;
 
     case $arg in
+
+        "lyrics"    )
+            showLyrics;
+            break  ;;
+
         "play"    )
             if [ $# != 1 ]; then
                 # There are additional arguments, so find out how many
