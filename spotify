@@ -40,8 +40,7 @@ showHelp () {
     echo;
     echo "  next                         # Skips to the next song in a playlist.";
     echo "  prev                         # Returns to the previous song in a playlist.";
-    echo "  pos [time]                   # Jump to a specific time (in seconds) in the"
-    echo "                               # current song.";
+    echo "  pos [time]                   # Jump to a time (in secs) in the current song.";
     echo "  pause                        # Pauses Spotify playback.";
     echo "  quit                         # Stops playback and quits Spotify.";
     echo;
