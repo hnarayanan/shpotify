@@ -40,17 +40,18 @@ showHelp () {
     echo;
     echo "  next                         # Skips to the next song in a playlist.";
     echo "  prev                         # Returns to the previous song in a playlist.";
-    echo "  pos [time]                   # Jump to a specific time (in seconds) in the current song.";
+    echo "  pos [time]                   # Jump to a specific time (in seconds) in the"
+    echo "                               # current song.";
     echo "  pause                        # Pauses Spotify playback.";
     echo "  quit                         # Stops playback and quits Spotify.";
     echo;
     echo "  vol up                       # Increases the volume by 10%.";
     echo "  vol down                     # Decreases the volume by 10%.";
     echo "  vol [amount]                 # Sets the volume to an amount between 0 and 100.";
-    echo "  vol show                     # Shows the current Spotify volume between 0 and 100.";
+    echo "  vol show                     # The current Spotify volume from 0 and 100.";
     echo;
-    echo "  status                       # Shows the play status, including the current song details.";
-    echo "  share                        # Shows and copies the current song URL to the clipboard for sharing."
+    echo "  status                       # The play status, including the current song.";
+    echo "  share                        # Copies the current song URL to the clipboard."
     echo;
     echo "  toggle shuffle               # Toggle shuffle playback mode.";
     echo "  toggle repeat                # Toggle repeat playback mode.";
