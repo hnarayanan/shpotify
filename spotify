@@ -120,7 +120,7 @@ while [ $# -gt 0 ]; do
 
                         results=$( \
                             curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=playlist&limit=10&offset=0" -H "Accept: application/json" \
-                            | grep -E -o "spotify:user:[a-zA-Z0-9]+:playlist:[a-zA-Z0-9]+" -m 10 \
+                            | grep -E -o "spotify:user:[a-zA-Z0-9_]+:playlist:[a-zA-Z0-9]+" -m 10 \
                         )
 
                         count=$( \
