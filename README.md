@@ -8,6 +8,18 @@
 You can quickly get started with shpotify by following a few simple
 steps:
 
+### Homebrew
+
+The easiest way to install shpotify is by using the [Homebrew package manager](http://brew.sh):
+
+````
+brew install shpotify
+````
+
+### Manual installation
+
+To install the script manually follow these steps:
+
 1. Fetch a copy of this repository, either with git or [download the
    zip archive](https://github.com/hnarayanan/shpotify/archive/master.zip).
 
@@ -21,31 +33,32 @@ steps:
 3. Copy the file `spotify` to a convenient location in your `PATH`, or
    set your `PATH` to include the folder where the file is located.
 
-4. That's it! You can now use it to control Spotify with the following
-   commands:
-   ````
-   spotify play                      Resumes playback where Spotify last left off
-   spotify play [song name]          Finds a song by name and plays it
-   spotify play album [album name]   Finds an album by name and plays it
-   spotify play artist [artist name] Finds an artist by name and plays it
-   spotify play list [playlist name] Finds a playlist by name and plays it
+## Usage
 
-   spotify next                      Skips to the next song in a playlist
-   spotify prev                      Returns to the previous song in a playlist
-   spotify pos [time]                Jump to a specific time (in seconds) in the current song
-   spotify pause                     Pauses/Resumes Spotify playback
-   spotify quit                      Stops playback and quits Spotify
+With shpotify you can control Spotify with the following commands:
+````
+spotify play                      Resumes playback where Spotify last left off
+spotify play [song name]          Finds a song by name and plays it
+spotify play album [album name]   Finds an album by name and plays it
+spotify play artist [artist name] Finds an artist by name and plays it
+spotify play list [playlist name] Finds a playlist by name and plays it
 
-   spotify vol up                    Increases the volume by 10%
-   spotify vol down                  Decreases the volume by 10%
-   spotify vol [amount]              Sets the volume to an amount between 0 and 100
+spotify next                      Skips to the next song in a playlist
+spotify prev                      Returns to the previous song in a playlist
+spotify pos [time]                Jump to a specific time (in seconds) in the current song
+spotify pause                     Pauses/Resumes Spotify playback
+spotify quit                      Stops playback and quits Spotify
 
-   spotify status                    Shows the play status, including the current song details
-   spotify share                     Shows and copies the current song URL to the clipboard for sharing
+spotify vol up                    Increases the volume by 10%
+spotify vol down                  Decreases the volume by 10%
+spotify vol [amount]              Sets the volume to an amount between 0 and 100
 
-   spotify toggle shuffle            Toggles shuffle playback mode
-   spotify toggle repeat             Toggles repeat playback mode
-   ````
+spotify status                    Shows the play status, including the current song details
+spotify share                     Shows and copies the current song URL to the clipboard for sharing
+
+spotify toggle shuffle            Toggles shuffle playback mode
+spotify toggle repeat             Toggles repeat playback mode
+````
 
 ## Authors and contributing
 
