@@ -3,14 +3,12 @@
 *shpotify* is a simple Bash/Apple script to control
  [Spotify](https://www.spotify.com) from the command line on a Mac.
 
-## Installation and usage
-
-You can quickly get started with shpotify by following a few simple
-steps:
+## Installation
 
 ### Homebrew
 
-The easiest way to install shpotify is by using the [Homebrew package manager](http://brew.sh):
+The easiest way to install shpotify is by using the [Homebrew package
+manager](http://brew.sh):
 
 ````
 brew install shpotify
@@ -18,7 +16,8 @@ brew install shpotify
 
 ### Manual installation
 
-To install the script manually follow these steps:
+If you don’t use Homebrew, you can install the script manually by
+following a few simple steps:
 
 1. Fetch a copy of this repository, either with git or [download the
    zip archive](https://github.com/hnarayanan/shpotify/archive/master.zip).
