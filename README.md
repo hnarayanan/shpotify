@@ -51,6 +51,7 @@ spotify quit                      Stops playback and quits Spotify
 spotify vol up                    Increases the volume by 10%
 spotify vol down                  Decreases the volume by 10%
 spotify vol [amount]              Sets the volume to an amount between 0 and 100
+spotify vol show                  Shows the current Spotify volume
 
 spotify status                    Shows the play status, including the current song details
 spotify share                     Shows and copies the current song URL to the clipboard for sharing
