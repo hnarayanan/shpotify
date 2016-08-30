@@ -208,7 +208,7 @@ while [ $# -gt 0 ]; do
                     newvol=0;
                     cecho "Spotify volume level is at min.";
                 fi
-            elif [ $2 -gt 0 ]; then
+            elif [ $2 -ge 0 ]; then
                 newvol=$2;
                 text="to $2";
             fi
