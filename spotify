@@ -50,7 +50,8 @@ showHelp () {
     echo "  vol show                     # Shows the current Spotify volume.";
     echo;
     echo "  status                       # Shows the current player status.";
-    echo "  share                        # Copies the current song URL to the clipboard."
+    echo "  share                        # Copies the current song URL to the clipboard.";
+    echo "  info                         # Shows Full Information about song that is playing.";
     echo;
     echo "  toggle shuffle               # Toggles shuffle playback mode.";
     echo "  toggle repeat                # Toggles repeat playback mode.";
