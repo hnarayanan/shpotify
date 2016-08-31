@@ -41,6 +41,7 @@ spotify play [song name]          Finds a song by name and plays it.
 spotify play album [album name]   Finds an album by name and plays it.
 spotify play artist [artist name] Finds an artist by name and plays it.
 spotify play list [playlist name] Finds a playlist by name and plays it.
+spotify play uri [uri]            Play songs from specific uri.
 
 spotify next                      Skips to the next song in a playlist.
 spotify prev                      Returns to the previous song in a playlist.
