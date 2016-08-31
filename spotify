@@ -188,7 +188,6 @@ while [ $# -gt 0 ]; do
 
         "vol"    )
             vol=`osascript -e 'tell application "Spotify" to sound volume as integer'`;
-            text=$2;
             if [[ $2 = "" ]]; then
                 cecho "Current Spotify volume level is $vol.";
                 break ;
@@ -208,7 +207,7 @@ while [ $# -gt 0 ]; do
                     newvol=0;
                     cecho "Spotify volume level is at min.";
                 fi
-            elif [[ $2 =~ ^[0-9]+$ && $2 -gt 0 ]]; then
+            elif [[ $2 =~ ^[0-9]+$ ]] && [[ $2 -ge 0 && $2 -le 100 ]]; then
                 newvol=$2;
                 cecho "Setting Spotify volume level to $newvol";
             else
