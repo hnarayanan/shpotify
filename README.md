@@ -36,27 +36,28 @@ following a few simple steps:
 
 With shpotify you can control Spotify with the following commands:
 ````
-spotify play                      Resumes playback where Spotify last left off
-spotify play [song name]          Finds a song by name and plays it
-spotify play album [album name]   Finds an album by name and plays it
-spotify play artist [artist name] Finds an artist by name and plays it
-spotify play list [playlist name] Finds a playlist by name and plays it
+spotify play                      Resumes playback where Spotify last left off.
+spotify play [song name]          Finds a song by name and plays it.
+spotify play album [album name]   Finds an album by name and plays it.
+spotify play artist [artist name] Finds an artist by name and plays it.
+spotify play list [playlist name] Finds a playlist by name and plays it.
 
-spotify next                      Skips to the next song in a playlist
-spotify prev                      Returns to the previous song in a playlist
-spotify pos [time]                Jump to a specific time (in seconds) in the current song
-spotify pause                     Pauses/Resumes Spotify playback
-spotify quit                      Stops playback and quits Spotify
+spotify next                      Skips to the next song in a playlist.
+spotify prev                      Returns to the previous song in a playlist.
+spotify pos [time]                Jump to a specific time (in seconds) in the current song.
+spotify pause                     Pauses/Resumes Spotify playback.
+spotify quit                      Stops playback and quits Spotify.
 
-spotify vol up                    Increases the volume by 10%
-spotify vol down                  Decreases the volume by 10%
-spotify vol [amount]              Sets the volume to an amount between 0 and 100
+spotify vol up                    Increases the volume by 10%.
+spotify vol down                  Decreases the volume by 10%.
+spotify vol [amount]              Sets the volume to an amount between 0 and 100.
+spotify vol                       Shows the current volume.
 
-spotify status                    Shows the play status, including the current song details
-spotify share                     Shows and copies the current song URL to the clipboard for sharing
+spotify status                    Shows the play status, including the current song details.
+spotify share                     Shows and copies the current song URL to the clipboard for sharing.
 
-spotify toggle shuffle            Toggles shuffle playback mode
-spotify toggle repeat             Toggles repeat playback mode
+spotify toggle shuffle            Toggles shuffle playback mode.
+spotify toggle repeat             Toggles repeat playback mode.
 ````
 
 ## Authors and contributing
