@@ -265,11 +265,12 @@ while [ $# -gt 0 ]; do
             break ;;
 
         "share"     )
-            url=`osascript -e 'tell application "Spotify" to spotify url of current track'`;
+            uri=`osascript -e 'tell application "Spotify" to spotify url of current track'`;
             remove='spotify:track:'
-            url=${url#$remove}
+            url=${uri#$remove}
             url="http://open.spotify.com/track/$url"
             cecho "Share URL: $url";
+            cecho "Spotify URI: $uri";
             echo -n "$url" | pbcopy
             break;;
 
