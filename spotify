@@ -139,13 +139,20 @@ while [ $# -gt 0 ]; do
                         _args=${array[@]:2:$len};
                         searchAndPlay $2 "$_args";;
 
+                    "uri"  )
+                        SPOTIFY_PLAY_URI=${array[@]:2:$len};;
+
                     *   )
                         _args=${array[@]:1:$len};
                         searchAndPlay track "$_args";;
                 esac
 
                 if [ "$SPOTIFY_PLAY_URI" != "" ]; then
-                    cecho "Playing ($Q Search) -> Spotify URL: $SPOTIFY_PLAY_URI";
+                    if [ "$2" = "uri" ]; then
+                        cecho "Playing Spotify URI: $SPOTIFY_PLAY_URI";
+                    else
+                        cecho "Playing ($Q Search) -> Spotify URI: $SPOTIFY_PLAY_URI";
+                    fi
 
                     osascript -e "tell application \"Spotify\" to play track \"$SPOTIFY_PLAY_URI\"";
 
@@ -269,9 +276,20 @@ while [ $# -gt 0 ]; do
             remove='spotify:track:'
             url=${uri#$remove}
             url="http://open.spotify.com/track/$url"
-            cecho "Share URL: $url";
-            cecho "Spotify URI: $uri";
-            echo -n "$url" | pbcopy
+
+            if [ "$2" = "" ]; then
+                cecho "Spotify URL: $url"
+                cecho "Spotify URI: $uri"
+                echo "To copy the URL or URI to your clipboard, use:"
+                echo "\`spotify share url\` or"
+                echo "\`spotify share uri\` respectively."
+            elif [ "$2" = "url" ]; then
+                cecho "Spotify URL: $url";
+                echo -n $url | pbcopy
+            elif [ "$2" = "uri" ]; then
+                cecho "Spotify URI: $uri";
+                echo -n $uri | pbcopy
+            fi
             break;;
 
         "pos"   )
