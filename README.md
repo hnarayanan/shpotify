@@ -55,7 +55,10 @@ spotify vol [amount]              Sets the volume to an amount between 0 and 100
 spotify vol                       Shows the current volume.
 
 spotify status                    Shows the play status, including the current song details.
-spotify share                     Shows and copies the current song URL to the clipboard for sharing.
+
+spotify share                     Displays the current song's Spotify URL and URI.
+spotify share url 				  Displays the current song's Spotify URL and copies it to the clipboard.
+spotify share uri 				  Displays the current song's Spotify URI and copies it to the clipboard.
 
 spotify toggle shuffle            Toggles shuffle playback mode.
 spotify toggle repeat             Toggles repeat playback mode.
