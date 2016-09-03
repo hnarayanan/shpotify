@@ -211,8 +211,8 @@ while [ $# -gt 0 ]; do
                 newvol=$2;
                 cecho "Setting Spotify volume level to $newvol";
             else
-                echo "Improper use of \`vol\` command"
-                echo "The \`vol\` command should be used as follows:"
+                echo "Improper use of 'vol' command"
+                echo "The 'vol' command should be used as follows:"
                 echo "  vol up                       # Increases the volume by 10%.";
                 echo "  vol down                     # Decreases the volume by 10%.";
                 echo "  vol [amount]                 # Sets the volume to an amount between 0 and 100.";
