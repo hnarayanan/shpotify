@@ -58,7 +58,6 @@ spotify share                     Shows and copies the current song URL to the c
 
 spotify toggle shuffle            Toggles shuffle playback mode.
 spotify toggle repeat             Toggles repeat playback mode.
-````
 
 ## Authors and contributing
 
