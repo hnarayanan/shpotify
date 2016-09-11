@@ -36,24 +36,24 @@ following a few simple steps:
 
 With shpotify you can control Spotify with the following commands:
 ````
-spotify play (or "p")             Resumes playback where Spotify last left off.
+spotify play (or 'p')             Resumes playback where Spotify last left off.
              [song name]          Finds a song by name and plays it.
              album [album name]   Finds an album by name and plays it.
              artist [artist name] Finds an artist by name and plays it.
              list [playlist name] Finds a playlist by name and plays it.
 
-spotify next (or "n")             Skips to the next song in a playlist.
+spotify next (or 'n')             Skips to the next song in a playlist.
 spotify prev                      Returns to the previous song in a playlist.
 spotify pos [time]                Jump to a specific time (in seconds) in the current song.
-spotify pause (or "p")            Pauses/Resumes Spotify playback.
+spotify pause (or 'p')            Pauses/Resumes Spotify playback.
 spotify quit                      Stops playback and quits Spotify.
 
-spotify vol (or "v")              Shows the current volume.
+spotify vol (or 'v')              Shows the current volume.
             up                    Increases the volume by 10%.
             down                  Decreases the volume by 10%.
             [amount]              Sets the volume to an amount between 0 and 100.
 
-spotify status (or "st")          Shows the play status, including the current song details.
+spotify status (or 'st')          Shows the play status, including the current song details.
 spotify share                     Shows and copies the current song URL to the clipboard for sharing.
 
 spotify toggle shuffle            Toggles shuffle playback mode.
