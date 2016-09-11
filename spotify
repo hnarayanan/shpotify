@@ -33,10 +33,10 @@ showHelp () {
     echo "Commands:";
     echo;
     echo "  play (or 'p')                # Resumes playback where Spotify last left off.";
-    echo "  play [song name]             # Finds a song by name and plays it.";
-    echo "  play album [album name]      # Finds an album by name and plays it.";
-    echo "  play artist [artist name]    # Finds an artist by name and plays it.";
-    echo "  play list [playlist name]    # Finds a playlist by name and plays it.";
+    echo "       [song name]             # Finds a song by name and plays it.";
+    echo "       album [album name]      # Finds an album by name and plays it.";
+    echo "       artist [artist name]    # Finds an artist by name and plays it.";
+    echo "       list [playlist name]    # Finds a playlist by name and plays it.";
     echo;
     echo "  next (or 'n')                # Skips to the next song in a playlist.";
     echo "  prev                         # Returns to the previous song in a playlist.";
@@ -45,9 +45,9 @@ showHelp () {
     echo "  quit                         # Stops playback and quits Spotify.";
     echo;
     echo "  vol (or 'v')                 # Shows the current Spotify volume.";
-    echo "  vol up                       # Increases the volume by 10%.";
-    echo "  vol down                     # Decreases the volume by 10%.";
-    echo "  vol [amount]                 # Sets the volume to an amount between 0 and 100.";
+    echo "      up                       # Increases the volume by 10%.";
+    echo "      down                     # Decreases the volume by 10%.";
+    echo "      [amount]                 # Sets the volume to an amount between 0 and 100.";
     echo;
     echo "  status (or 'st')             # Shows the current player status.";
     echo "  share                        # Copies the current song URL to the clipboard."
