@@ -70,10 +70,28 @@ showStatus () {
         artist=`osascript -e 'tell application "Spotify" to artist of current track as string'`;
         album=`osascript -e 'tell application "Spotify" to album of current track as string'`;
         track=`osascript -e 'tell application "Spotify" to name of current track as string'`;
-        duration=`osascript -e 'tell application "Spotify" to duration of current track as string'`;
-        duration=$(echo "scale=2; $duration / 60 / 1000" | bc);
-        position=`osascript -e 'tell application "Spotify" to player position as string' | tr ',' '.'`;
-        position=$(echo "scale=2; $position / 60" | bc | awk '{printf "%0.2f", $0}');
+        duration=`osascript -e 'tell application "Spotify" 
+                set durSec to (duration of current track / 1000) as text
+                set tM to (round (durSec / 60) rounding down) as text
+                if length of ((durSec mod 60 div 1) as text) is greater than 1 then
+                    set tS to (durSec mod 60 div 1) as text
+                else
+                    set tS to ("0" & (durSec mod 60 div 1)) as text
+                end if
+                set myTime to tM as text & ":" & tS as text
+                end tell
+                return myTime'`;
+        position=`osascript -e 'tell application "Spotify" 
+                set pos to player position
+                set nM to (round (pos / 60) rounding down) as text
+                if length of ((round (pos mod 60) rounding down) as text) is greater than 1 then
+                    set nS to (round (pos mod 60) rounding down) as text
+                else
+                    set nS to ("0" & (round (pos mod 60) rounding down)) as text
+                end if
+                set nowAt to nM as text & ":" & nS as text
+                end tell
+                return nowAt'`;
 
         echo -e $reset"Artist: $artist\nAlbum: $album\nTrack: $track \nPosition: $position / $duration";
     fi
@@ -234,18 +252,27 @@ while [ $# -gt 0 ]; do
 
         "info" )
             info=`osascript -e 'tell application "Spotify"
-                set tM to round (duration of current track / 60) rounding down
-                set tS to duration of current track mod 60
-                set pos to player position as text
+                set durSec to (duration of current track / 1000)
+                set tM to (round (durSec / 60) rounding down) as text
+                if length of ((durSec mod 60 div 1) as text) is greater than 1 then
+                    set tS to (durSec mod 60 div 1) as text
+                else
+                    set tS to ("0" & (durSec mod 60 div 1)) as text
+                end if
                 set myTime to tM as text & "min " & tS as text & "s"
-                set nM to round (player position / 60) rounding down
-                set nS to round (player position mod 60) rounding down
+                set pos to player position
+                set nM to (round (pos / 60) rounding down) as text
+                if length of ((round (pos mod 60) rounding down) as text) is greater than 1 then
+                    set nS to (round (pos mod 60) rounding down) as text
+                else
+                    set nS to ("0" & (round (pos mod 60) rounding down)) as text
+                end if
                 set nowAt to nM as text & "min " & nS as text & "s"
                 set info to "" & "\nArtist:         " & artist of current track
                 set info to info & "\nTrack:          " & name of current track
                 set info to info & "\nAlbum Artist:   " & album artist of current track
                 set info to info & "\nAlbum:          " & album of current track
-                set info to info & "\nSeconds:        " & duration of current track
+                set info to info & "\nSeconds:        " & durSec
                 set info to info & "\nSeconds played: " & pos
                 set info to info & "\nDuration:       " & mytime
                 set info to info & "\nNow at:         " & nowAt
