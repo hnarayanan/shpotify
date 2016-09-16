@@ -281,7 +281,7 @@ while [ $# -gt 0 ]; do
                 set info to info & "\nPopularity:     " & popularity of current track
                 set info to info & "\nId:             " & id of current track
                 set info to info & "\nSpotify URL:    " & spotify url of current track
-                set info to info & "\nArtwork:        " & artwork of current track
+                set info to info & "\nArtwork:        " & artwork url of current track
                 set info to info & "\nPlayer:         " & player state
                 set info to info & "\nVolume:         " & sound volume
                 set info to info & "\nShuffle:        " & shuffling
