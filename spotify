@@ -74,7 +74,7 @@ showStatus () {
         artist=`osascript -e 'tell application "Spotify" to artist of current track as string'`;
         album=`osascript -e 'tell application "Spotify" to album of current track as string'`;
         track=`osascript -e 'tell application "Spotify" to name of current track as string'`;
-        duration=`osascript -e 'tell application "Spotify" 
+        duration=`osascript -e 'tell application "Spotify"
                 set durSec to (duration of current track / 1000) as text
                 set tM to (round (durSec / 60) rounding down) as text
                 if length of ((durSec mod 60 div 1) as text) is greater than 1 then
@@ -85,7 +85,7 @@ showStatus () {
                 set myTime to tM as text & ":" & tS as text
                 end tell
                 return myTime'`;
-        position=`osascript -e 'tell application "Spotify" 
+        position=`osascript -e 'tell application "Spotify"
                 set pos to player position
                 set nM to (round (pos / 60) rounding down) as text
                 if length of ((round (pos mod 60) rounding down) as text) is greater than 1 then
@@ -211,8 +211,19 @@ while [ $# -gt 0 ]; do
             break ;;
 
         "prev"    ) cecho "Going to previous track.";
-            osascript -e 'tell application "Spotify" to previous track';
+            osascript -e '
+            tell application "Spotify"
+                if player position is greater than 3 then
+                    previous track
+                end if
+                previous track
+            end tell';
             showStatus;
+            break ;;
+
+        "replay"  ) cecho "Replaying current track.";
+            uri=`osascript -e 'tell application "Spotify" to spotify url of current track'`;
+            osascript -e "tell application \"Spotify\" to play track \"$uri\"";
             break ;;
 
         "vol"    )

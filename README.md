@@ -45,6 +45,7 @@ spotify play uri [uri]            Play songs from specific uri.
 
 spotify next                      Skips to the next song in a playlist.
 spotify prev                      Returns to the previous song in a playlist.
+spotify replay					  Replays the current track from the beggining.
 spotify pos [time]                Jump to a specific time (in seconds) in the current song.
 spotify pause                     Pauses/Resumes Spotify playback.
 spotify quit                      Stops playback and quits Spotify.
