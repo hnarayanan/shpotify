@@ -41,6 +41,7 @@ showHelp () {
     echo;
     echo "  next                         # Skips to the next song in a playlist.";
     echo "  prev                         # Returns to the previous song in a playlist.";
+    echo "  replay                       # Replays the current track from the beggining.";
     echo "  pos [time]                   # Jumps to a time (in secs) in the current song.";
     echo "  pause                        # Pauses Spotify playback.";
     echo "  quit                         # Stops playback and quits Spotify.";
