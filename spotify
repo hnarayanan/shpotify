@@ -112,6 +112,17 @@ playPause () {
     osascript -e 'tell application "Spotify" to playpause';
 }
 
+playPause () {
+    state=`osascript -e 'tell application "Spotify" to player state as string'`;
+    if [ $state = "playing" ]; then
+      cecho "Pausing Spotify.";
+    else
+      cecho "Playing Spotify.";
+    fi
+
+    osascript -e 'tell application "Spotify" to playpause';
+}
+
 if [ $# = 0 ]; then
     showHelp;
 else
