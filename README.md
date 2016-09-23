@@ -63,6 +63,8 @@ spotify share uri                  Displays the current song's Spotify URI and c
 
 spotify toggle shuffle             Toggles shuffle playback mode.
 spotify toggle repeat              Toggles repeat playback mode.
+
+spotify -v | --version             Shows the shpotify version number.
 ````
 
 ## Authors and contributing

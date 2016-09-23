@@ -60,6 +60,8 @@ showHelp () {
     echo;
     echo "  toggle shuffle               # Toggles shuffle playback mode.";
     echo "  toggle repeat                # Toggles repeat playback mode.";
+    echo;
+    echo "  -v | --version               # Shows the shpotify version number.";
 }
 
 showVersion() {
