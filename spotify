@@ -62,6 +62,10 @@ showHelp () {
     echo "  toggle repeat                # Toggles repeat playback mode.";
 }
 
+showVersion() {
+    echo "shpotify 1.2.0";
+}
+
 cecho(){
     bold=$(tput bold);
     green=$(tput setaf 2);
@@ -346,8 +350,13 @@ while [ $# -gt 0 ]; do
             osascript -e "tell application \"Spotify\" to set player position to $2";
             break;;
 
+        "-v" | "--version" )
+            showVersion;
+            break ;;
+
         "help" | * )
             showHelp;
             break ;;
+
     esac
 done
