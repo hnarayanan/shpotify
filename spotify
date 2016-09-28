@@ -213,17 +213,14 @@ while [ $# -gt 0 ]; do
         "prev"    ) cecho "Going to previous track.";
             osascript -e '
             tell application "Spotify"
-                if player position is greater than 3 then
-                    previous track
-                end if
+                set player position to 0
                 previous track
             end tell';
             showStatus;
             break ;;
 
         "replay"  ) cecho "Replaying current track.";
-            uri=`osascript -e 'tell application "Spotify" to spotify url of current track'`;
-            osascript -e "tell application \"Spotify\" to play track \"$uri\"";
+            osascript -e 'tell application "Spotify" to set player position to 0'
             break ;;
 
         "vol"    )
