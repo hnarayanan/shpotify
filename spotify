@@ -60,6 +60,12 @@ showHelp () {
     echo;
     echo "  toggle shuffle               # Toggles shuffle playback mode.";
     echo "  toggle repeat                # Toggles repeat playback mode.";
+    echo;
+    echo "  -v | --version               # Shows the shpotify version number.";
+}
+
+showVersion() {
+    echo "shpotify 1.2.0";
 }
 
 cecho(){
@@ -343,8 +349,13 @@ while [ $# -gt 0 ]; do
             osascript -e "tell application \"Spotify\" to set player position to $2";
             break;;
 
+        "-v" | "--version" )
+            showVersion;
+            break ;;
+
         "help" | * )
             showHelp;
             break ;;
+
     esac
 done
