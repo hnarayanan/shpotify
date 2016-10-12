@@ -48,6 +48,7 @@ spotify prev                       Returns to the previous song in a playlist.
 spotify replay                     Replays the current track from the beginning.
 spotify pos <time>                 Jump to a specific time (in seconds) in the current song.
 spotify pause                      Pauses/Resumes Spotify playback.
+spotify stop                       Stops playback or keeps spotify paused
 spotify quit                       Stops playback and quits Spotify.
 
 spotify vol up                     Increases the volume by 10%.
