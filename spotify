@@ -53,9 +53,9 @@ showHelp () {
     echo "  vol [show]                   # Shows the current Spotify volume.";
     echo;
     echo "  status                       # Shows the current player status.";
-    echo "  artist                       # Shows the currently playing artist.";
-    echo "  album                        # Shows the currently playing album.";
-    echo "  track                        # Shows the currently playing track.";
+    echo "  status artist                # Shows the currently playing artist.";
+    echo "  status album                 # Shows the currently playing album.";
+    echo "  status track                 # Shows the currently playing track.";
     echo;
     echo "  share                        # Displays the current song's Spotify URL and URI."
     echo "  share url                    # Displays the current song's Spotify URL and copies it to the clipboard."
@@ -285,19 +285,25 @@ while [ $# -gt 0 ]; do
             break ;;
 
         "status" )
-            showStatus;
-            break ;;
+            if [ $# != 1 ]; then
+                # There are additional arguments, a status subcommand
+                case $2 in
+                    "artist" )
+                        showArtist;
+                        break ;;
 
-        "artist" )
-            showArtist;
-            break ;;
+                    "album" )
+                        showAlbum;
+                        break ;;
 
-        "album" )
-            showAlbum;
-            break ;;
-
-        "track" )
-            showTrack;
+                    "track" )
+                        showTrack;
+                        break ;;
+                esac
+            else
+                # status is the only param
+                showStatus;
+            fi
             break ;;
 
         "info" )
