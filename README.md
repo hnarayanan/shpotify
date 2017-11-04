@@ -65,12 +65,30 @@ spotify toggle shuffle             Toggles shuffle playback mode.
 spotify toggle repeat              Toggles repeat playback mode.
 ````
 
+## Connecting with the Spotify API
+
+shpotify needs to connect to Spotify’s API in order to find music by
+name. It is very likely you want this feature!
+
+To get this to work, you first need to sign up (or into) Spotify’s
+developer site and [create an *Application*][spotify-dev]. Once you’ve
+done so, you can find its `Client ID` and `Client Secret` values and
+enter them into your shpotify config file at `${HOME}/.shpotify.cfg`.
+
+Be sure to quote your values and don’t add any extra spaces. When
+done, it should look like the following (but with your own values):
+
+````
+CLIENT_ID="abc01de2fghijk345lmnop"
+CLIENT_SECRET="qr6stu789vwxyz"
+````
+
 ## Authors and contributing
 
 shpotify is primarily written and maintained by [Harish
 Narayanan](https://harishnarayanan.org).
 
-Since it's an open source project, it contains numerous contributions
+Since it’s an open source project, it contains numerous contributions
 from many helpful people, including:
 
 * Jorge Colindres
@@ -81,7 +99,7 @@ from many helpful people, including:
 * Eric Martin
 * Peter Fonseca
 
-If you're interested in contributing too, please consider addressing
+If you’re interested in contributing too, please consider addressing
 some of the [issues people have previously
 reported](https://github.com/hnarayanan/shpotify/issues) and
 [submitting a pull
@@ -90,7 +108,7 @@ you!**
 
 ## Copyright and license
 
-Copyright (c) 2012–2016 [Harish Narayanan](https://harishnarayanan.org).
+Copyright (c) 2012–2017 [Harish Narayanan](https://harishnarayanan.org).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -109,3 +127,5 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+[spotify-dev]: https://developer.spotify.com/my-applications/#!/applications/create
