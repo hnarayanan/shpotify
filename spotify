@@ -36,20 +36,19 @@ source "${USER_CONFIG_FILE}";
 
 showAPIHelp() {
     echo;
-    echo "To Connect to The Spotify API:";
+    echo "To Connect to the Spotify API";
     echo;
-    echo "  Sign up (or in) and create an 'Application' at:";
+    echo "  This command line application needs to connect to Spotify's API in order to";
+    echo "  find songs by name. It is very likely you want this feature!";
+    echo;
+    echo "  To get this to work, you need to sign up (or in) and create an 'Application' at:";
     echo "  https://developer.spotify.com/my-applications/#!/applications/create";
     echo;
-    echo "  Once you've created your app, find the entries 'Client ID' and 'Client Secret'";
-    echo "  You can always get back to your apps at:";
-    echo "  https://developer.spotify.com/my-applications/#!/applications";
+    echo "  Once you've created an application, find the 'Client ID' and 'Client Secret'";
+    echo "  values, and enter them into your shpotify config file at '${USER_CONFIG_FILE}'";
     echo;
-    echo "  Now open your shpotify config file '${USER_CONFIG_FILE}'";
-    echo "  and enter your Client ID and Client Secret";
-    echo;
-    echo "  Be sure to quote your values and don't add any extra spaces.";
-    echo "  It should look like this (but with your own values):";
+    echo "  Be sure to quote your values and don't add any extra spaces!";
+    echo "  When done, it should look like this (but with your own values):";
     echo '  CLIENT_ID="abc01de2fghijk345lmnop"';
     echo '  CLIENT_SECRET="qr6stu789vwxyz"';
 }
