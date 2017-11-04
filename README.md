@@ -32,6 +32,24 @@ following a few simple steps:
 3. Copy the file `spotify` to a convenient location in your `PATH`, or
    set your `PATH` to include the folder where the file is located.
 
+### Connecting with the Spotify API
+
+shpotify needs to connect to Spotify’s API in order to find music by
+name. It is very likely you want this feature!
+
+To get this to work, you first need to sign up (or into) Spotify’s
+developer site and [create an *Application*][spotify-dev]. Once you’ve
+done so, you can find its `Client ID` and `Client Secret` values and
+enter them into your shpotify config file at `${HOME}/.shpotify.cfg`.
+
+Be sure to quote your values and don’t add any extra spaces. When
+done, it should look like the following (but with your own values):
+
+````
+CLIENT_ID="abc01de2fghijk345lmnop"
+CLIENT_SECRET="qr6stu789vwxyz"
+````
+
 ## Usage
 
 With shpotify you can control Spotify with the following commands:
@@ -63,24 +81,6 @@ spotify share uri                  Displays the current song's Spotify URI and c
 
 spotify toggle shuffle             Toggles shuffle playback mode.
 spotify toggle repeat              Toggles repeat playback mode.
-````
-
-## Connecting with the Spotify API
-
-shpotify needs to connect to Spotify’s API in order to find music by
-name. It is very likely you want this feature!
-
-To get this to work, you first need to sign up (or into) Spotify’s
-developer site and [create an *Application*][spotify-dev]. Once you’ve
-done so, you can find its `Client ID` and `Client Secret` values and
-enter them into your shpotify config file at `${HOME}/.shpotify.cfg`.
-
-Be sure to quote your values and don’t add any extra spaces. When
-done, it should look like the following (but with your own values):
-
-````
-CLIENT_ID="abc01de2fghijk345lmnop"
-CLIENT_SECRET="qr6stu789vwxyz"
 ````
 
 ## Authors and contributing
