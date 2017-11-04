@@ -32,7 +32,7 @@ following a few simple steps:
 3. Copy the file `spotify` to a convenient location in your `PATH`, or
    set your `PATH` to include the folder where the file is located.
 
-### Connecting with the Spotify API
+### Connecting to Spotify’s API
 
 shpotify needs to connect to Spotify’s API in order to find music by
 name. It is very likely you want this feature!

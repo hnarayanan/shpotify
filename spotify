@@ -36,7 +36,7 @@ source "${USER_CONFIG_FILE}";
 
 showAPIHelp() {
     echo;
-    echo "Connecting with the Spotify API";
+    echo "Connecting to Spotify's API:";
     echo;
     echo "  This command line application needs to connect to Spotify's API in order to";
     echo "  find music by name. It is very likely you want this feature!";
@@ -165,7 +165,7 @@ while [ $# -gt 0 ]; do
                     type="$1"
                     Q="$2"
 
-                    cecho "Connecting to Spotify API";
+                    cecho "Connecting to Spotify's API";
 
                     SPOTIFY_TOKEN_RESPONSE_DATA=$( \
                         curl "${SPOTIFY_TOKEN_URI}" \
