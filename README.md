@@ -79,6 +79,7 @@ from many helpful people, including:
 * Gabriele Bonetti
 * Sean Heller
 * Eric Martin
+* Peter Fonseca
 
 If you're interested in contributing too, please consider addressing
 some of the [issues people have previously
