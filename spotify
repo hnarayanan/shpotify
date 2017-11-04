@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright (c) 2012--2016 Harish Narayanan <mail@harishnarayanan.org>
+# Copyright (c) 2012--2017 Harish Narayanan <mail@harishnarayanan.org>
 #
 # Contains numerous helpful contributions from Jorge Colindres, Thomas
 # Pritchard, iLan Epstein, Gabriele Bonetti, Sean Heller, Eric Martin
@@ -36,10 +36,10 @@ source "${USER_CONFIG_FILE}";
 
 showAPIHelp() {
     echo;
-    echo "To Connect to the Spotify API";
+    echo "Connecting with the Spotify API";
     echo;
     echo "  This command line application needs to connect to Spotify's API in order to";
-    echo "  find songs by name. It is very likely you want this feature!";
+    echo "  find music by name. It is very likely you want this feature!";
     echo;
     echo "  To get this to work, you need to sign up (or in) and create an 'Application' at:";
     echo "  https://developer.spotify.com/my-applications/#!/applications/create";
