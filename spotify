@@ -26,6 +26,34 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+USER_CONFIG_DEFAULTS="CLIENT_ID=\"\"\nCLIENT_SECRET=\"\"";
+USER_CONFIG_FILE="${HOME}/.shpotify.cfg";
+if ! [[ -f "${USER_CONFIG_FILE}" ]]; then
+    touch "${USER_CONFIG_FILE}";
+    echo -e "${USER_CONFIG_DEFAULTS}" > "${USER_CONFIG_FILE}";
+fi
+source "${USER_CONFIG_FILE}";
+
+showAPIHelp() {
+    echo;
+    echo "To Connect to The Spotify API:";
+    echo;
+    echo "  Sign up (or in) and create an 'Application' at:";
+    echo "  https://developer.spotify.com/my-applications/#!/applications/create";
+    echo;
+    echo "  Once you've created your app, find the entries 'Client ID' and 'Client Secret'";
+    echo "  You can always get back to your apps at:";
+    echo "  https://developer.spotify.com/my-applications/#!/applications";
+    echo;
+    echo "  Now open your shpotify config file '${USER_CONFIG_FILE}'";
+    echo "  and enter your Client ID and Client Secret";
+    echo;
+    echo "  Be sure to quote your values and don't add any extra spaces.";
+    echo "  It should look like this (but with your own values):";
+    echo '  CLIENT_ID="abc01de2fghijk345lmnop"';
+    echo '  CLIENT_SECRET="qr6stu789vwxyz"';
+}
+
 showHelp () {
     echo "Usage:";
     echo;
@@ -60,6 +88,7 @@ showHelp () {
     echo;
     echo "  toggle shuffle               # Toggles shuffle playback mode.";
     echo "  toggle repeat                # Toggles repeat playback mode.";
+    showAPIHelp
 }
 
 cecho(){
@@ -118,19 +147,59 @@ while [ $# -gt 0 ]; do
                 # There are additional arguments, so find out how many
                 array=( $@ );
                 len=${#array[@]};
-                SPOTIFY_SEARCH_API="https://api.spotify.com/v1/search"
+                SPOTIFY_SEARCH_API="https://api.spotify.com/v1/search";
+                SPOTIFY_TOKEN_URI="https://accounts.spotify.com/api/token";
+                if [ -z "${CLIENT_ID}" ]; then
+                    cecho "Invalid Client ID, please update ${USER_CONFIG_FILE}";
+                    showAPIHelp;
+                    exit 1;
+                fi
+                if [ -z "${CLIENT_SECRET}" ]; then
+                    cecho "Invalid Client Secret, please update ${USER_CONFIG_FILE}";
+                    showAPIHelp;
+                    exit 1;
+                fi
+                SHPOTIFY_CREDENTIALS=$(printf "${CLIENT_ID}:${CLIENT_SECRET}" | base64 | tr -d "\n");
                 SPOTIFY_PLAY_URI="";
 
                 searchAndPlay() {
                     type="$1"
                     Q="$2"
 
+                    cecho "Connecting to Spotify API";
+
+                    SPOTIFY_TOKEN_RESPONSE_DATA=$( \
+                        curl "${SPOTIFY_TOKEN_URI}" \
+                            --silent \
+                            -X "POST" \
+                            -H "Authorization: Basic ${SHPOTIFY_CREDENTIALS}" \
+                            -d "grant_type=client_credentials" \
+                    )
+                    if ! [[ "${SPOTIFY_TOKEN_RESPONSE_DATA}" =~ "access_token" ]]; then
+                        cecho "Autorization failed, please check ${USER_CONFG_FILE}"
+                        cecho "${SPOTIFY_TOKEN_RESPONSE_DATA}"
+                        showAPIHelp
+                        exit 1
+                    fi
+                    SPOTIFY_ACCESS_TOKEN=$( \
+                        printf "${SPOTIFY_TOKEN_RESPONSE_DATA}" \
+                        | grep -E -o '"access_token":".*",' \
+                        | sed 's/"access_token"://g' \
+                        | sed 's/"//g' \
+                        | sed 's/,.*//g' \
+                    )
+
                     cecho "Searching ${type}s for: $Q";
 
                     SPOTIFY_PLAY_URI=$( \
-                        curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=$type&limit=1&offset=0" -H "Accept: application/json" \
+                        curl -s -G $SPOTIFY_SEARCH_API \
+                            -H "Authorization: Bearer ${SPOTIFY_ACCESS_TOKEN}" \
+                            -H "Accept: application/json" \
+                            --data-urlencode "q=$Q" \
+                            -d "type=$type&limit=1&offset=0" \
                         | grep -E -o "spotify:$type:[a-zA-Z0-9]+" -m 1
                     )
+                    echo "play uri: ${SPOTIFY_PLAY_URI}"
                 }
 
                 case $2 in
