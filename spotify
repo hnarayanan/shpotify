@@ -80,6 +80,7 @@ showHelp () {
     echo "  vol [show]                   # Shows the current Spotify volume.";
     echo;
     echo "  status                       # Shows the current player status.";
+    echo "  pos                          # Shows the current song position (in secs)";
     echo;
     echo "  share                        # Displays the current song's Spotify URL and URI."
     echo "  share url                    # Displays the current song's Spotify URL and copies it to the clipboard."
@@ -97,13 +98,8 @@ cecho(){
     echo $bold$green"$1"$reset;
 }
 
-showStatus () {
-    state=`osascript -e 'tell application "Spotify" to player state as string'`;
-    cecho "Spotify is currently $state.";
-    artist=`osascript -e 'tell application "Spotify" to artist of current track as string'`;
-    album=`osascript -e 'tell application "Spotify" to album of current track as string'`;
-    track=`osascript -e 'tell application "Spotify" to name of current track as string'`;
-    duration=`osascript -e 'tell application "Spotify"
+getDuration() {
+    echo `osascript -e 'tell application "Spotify"
             set durSec to (duration of current track / 1000) as text
             set tM to (round (durSec / 60) rounding down) as text
             if length of ((durSec mod 60 div 1) as text) is greater than 1 then
@@ -114,7 +110,10 @@ showStatus () {
             set myTime to tM as text & ":" & tS as text
             end tell
             return myTime'`;
-    position=`osascript -e 'tell application "Spotify"
+}
+
+getPosition() {
+    echo `osascript -e 'tell application "Spotify"
             set pos to player position
             set nM to (round (pos / 60) rounding down) as text
             if length of ((round (pos mod 60) rounding down) as text) is greater than 1 then
@@ -124,7 +123,17 @@ showStatus () {
             end if
             set nowAt to nM as text & ":" & nS as text
             end tell
-            return nowAt'`;
+            return nowAt'`
+}
+
+showStatus () {
+    state=`osascript -e 'tell application "Spotify" to player state as string'`;
+    cecho "Spotify is currently $state.";
+    artist=`osascript -e 'tell application "Spotify" to artist of current track as string'`;
+    album=`osascript -e 'tell application "Spotify" to album of current track as string'`;
+    track=`osascript -e 'tell application "Spotify" to name of current track as string'`;
+    duration=$(getDuration);
+    position=$(getPosition);
 
     echo -e $reset"Artist: $artist\nAlbum: $album\nTrack: $track \nPosition: $position / $duration";
 }
@@ -407,8 +416,14 @@ while [ $# -gt 0 ]; do
             break;;
 
         "pos"   )
-            cecho "Adjusting Spotify play position."
-            osascript -e "tell application \"Spotify\" to set player position to $2";
+            if [ "$2" = "" ]; then
+                duration=$(getDuration);
+                position=$(getPosition)
+                echo -e "Position: $position / $duration";
+            else
+                cecho "Adjusting Spotify play position."
+                osascript -e "tell application \"Spotify\" to set player position to $2";
+            fi
             break;;
 
         "help" | * )
