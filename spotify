@@ -210,10 +210,12 @@ while [ $# -gt 0 ]; do
                         _args=${array[@]:2:$len};
                         Q=$_args;
 
+                        getAccessToken
+
                         cecho "Searching playlists for: $Q";
 
                         results=$( \
-                            curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=playlist&limit=10&offset=0" -H "Accept: application/json" \
+                            curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=playlist&limit=10&offset=0" -H "Accept: application/json" -H "Authorization: Bearer ${SPOTIFY_ACCESS_TOKEN}" \
                             | grep -E -o "spotify:user:[a-zA-Z0-9_]+:playlist:[a-zA-Z0-9]+" -m 10 \
                         )
 
