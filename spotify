@@ -190,7 +190,7 @@ while [ $# -gt 0 ]; do
                     type="$1"
                     Q="$2"
 
-                    getAccessToken
+                    getAccessToken;
 
                     cecho "Searching ${type}s for: $Q";
 
@@ -210,7 +210,7 @@ while [ $# -gt 0 ]; do
                         _args=${array[@]:2:$len};
                         Q=$_args;
 
-                        getAccessToken
+                        getAccessToken;
 
                         cecho "Searching playlists for: $Q";
 
