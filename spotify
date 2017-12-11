@@ -269,11 +269,11 @@ while [ $# -gt 0 ]; do
             state=`osascript -e 'tell application "Spotify" to player state as string'`;
             if [ $state = "playing" ]; then
               cecho "Pausing Spotify.";
+              osascript -e 'tell application "Spotify" to playpause';
             else
-              cecho "Playing Spotify.";
+              cecho "Spotify is already paused.";
             fi
 
-            osascript -e 'tell application "Spotify" to playpause';
             break ;;
 
         "stop"    )
