@@ -71,7 +71,8 @@ showHelp () {
     echo "  prev                         # Returns to the previous song in a playlist.";
     echo "  replay                       # Replays the current track from the begining.";
     echo "  pos <time>                   # Jumps to a time (in secs) in the current song.";
-    echo "  pause                        # Pauses Spotify playback.";
+    echo "  pause                        # Pauses/unpauses Spotify playback.";
+    echo "  stop                         # Stops playback or keeps playback stopped.";
     echo "  quit                         # Stops playback and quits Spotify.";
     echo;
     echo "  vol up                       # Increases the volume by 10%.";
@@ -273,6 +274,17 @@ while [ $# -gt 0 ]; do
             fi
 
             osascript -e 'tell application "Spotify" to playpause';
+            break ;;
+
+        "stop"    )
+            state=`osascript -e 'tell application "Spotify" to player state as string'`;
+            if [ $state = "playing" ]; then
+              cecho "Pausing Spotify.";
+              osascript -e 'tell application "Spotify" to playpause';
+            else
+              cecho "Spotify is already stopped."
+            fi
+
             break ;;
 
         "quit"    ) cecho "Quitting Spotify.";
