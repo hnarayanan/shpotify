@@ -71,8 +71,8 @@ showHelp () {
     echo "  prev                         # Returns to the previous song in a playlist.";
     echo "  replay                       # Replays the current track from the begining.";
     echo "  pos <time>                   # Jumps to a time (in secs) in the current song.";
-    echo "  pause                        # Pauses/unpauses Spotify playback.";
-    echo "  stop                         # Stops playback or keeps playback stopped.";
+    echo "  pause                        # Pauses (or resumes) Spotify playback.";
+    echo "  stop                         # Stops playback.";
     echo "  quit                         # Stops playback and quits Spotify.";
     echo;
     echo "  vol up                       # Increases the volume by 10%.";
