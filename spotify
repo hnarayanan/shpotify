@@ -348,7 +348,7 @@ while [ $# -gt 0 ]; do
                   read -p "Make your selection: " key
                   if [[ "$key" -ge 1 && "$key" -le $limit ]]; then
                       ((key--))
-                      SPOTIFY_PLAY_URI=$(echo "${SPOTIFY_RESULTS}" | jq -r '.'"$type"'s.items['"$key"'].uri')
+                      SPOTIFY_PLAY_URI=$(echo "${SPOTIFY_RESULTS}" | jq -r '.'"$(echo $type | sed -e "s/list/playlist/g")"'s.items['"$key"'].uri')
                   elif [[ $key == "" ]]; then
                       ((offset+=$limit))
                       searchAndDisplay $type "$Q"
