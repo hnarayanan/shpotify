@@ -3,6 +3,10 @@
 *shpotify* is a simple Bash/Apple script to control
  [Spotify](https://www.spotify.com) from the command line on a Mac.
 
+If you find this interesting, you should [follow me on
+Twitter](https://twitter.com/copingbear) to learn about the other
+things I do.
+
 ## Installation
 
 ### Homebrew
