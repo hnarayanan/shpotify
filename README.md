@@ -8,6 +8,7 @@ Twitter](https://twitter.com/copingbear) to learn about the other
 things I do.
 
 ## Installation
+Install the Spotify desktop application if you haven't already.
 
 ### Homebrew
 

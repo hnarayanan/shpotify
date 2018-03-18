@@ -133,8 +133,13 @@ showStatus () {
 if [ $# = 0 ]; then
     showHelp;
 else
+	if [ ! -d /Application/Spotify.app ] && [ ! -d $HOME/Applications/Spotify.app ]; then
+		echo "The Spotify application must be installed."
+		exit 1
+	fi
+
     if [ $(osascript -e 'application "Spotify" is running') = "false" ]; then
-        osascript -e 'tell application "Spotify" to activate'
+        osascript -e 'tell application "Spotify" to activate' || exit 1
         sleep 2
     fi
 fi
