@@ -159,7 +159,7 @@ while [ $# -gt 0 ]; do
                     showAPIHelp;
                     exit 1;
                 fi
-                SHPOTIFY_CREDENTIALS=$(printf "${CLIENT_ID}:${CLIENT_SECRET}" | base64 | tr -d "\n");
+                SHPOTIFY_CREDENTIALS=$(printf "${CLIENT_ID}:${CLIENT_SECRET}" | base64 | tr -d "\n"|tr -d '\r');
                 SPOTIFY_PLAY_URI="";
 
                 getAccessToken() {
