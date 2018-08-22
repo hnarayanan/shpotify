@@ -111,6 +111,10 @@ reported](https://github.com/hnarayanan/shpotify/issues) and
 request](https://help.github.com/articles/using-pull-requests/). **Thank
 you!**
 
+## Linux version
+
+If you want to use command line interface to Spotify on Linux, please check [spotify-cli-linux](https://github.com/pwittchen/spotify-cli-linux) project.
+
 ## Copyright and license
 
 Copyright (c) 2012–2018 [Harish Narayanan](https://harishnarayanan.org).
