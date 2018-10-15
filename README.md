@@ -9,10 +9,10 @@ things I do.
 
 ## Installation
 
-Download and install the [Spotify desktop
-application](http://www.spotify.com/download) if you haven’t already.
+[Download and install](http://www.spotify.com/download) the Spotify
+desktop application if you haven’t already.
 
-### Homebrew
+### With Homebrew
 
 The easiest way to install shpotify is by using the [Homebrew package
 manager](http://brew.sh):
