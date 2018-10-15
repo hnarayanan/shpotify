@@ -8,7 +8,9 @@ Twitter](https://twitter.com/copingbear) to learn about the other
 things I do.
 
 ## Installation
-Install the Spotify desktop application if you haven't already.
+
+Download and install the [Spotify desktop
+application](http://www.spotify.com/download) if you haven’t already.
 
 ### Homebrew
 
