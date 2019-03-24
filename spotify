@@ -306,7 +306,7 @@ while [ $# -gt 0 ]; do
 
         "quit"    ) cecho "Quitting Spotify.";
             osascript -e 'tell application "Spotify" to quit';
-            exit 1 ;;
+            exit 0 ;;
 
         "next"    ) cecho "Going to next track." ;
             osascript -e 'tell application "Spotify" to next track';
