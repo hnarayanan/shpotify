@@ -81,6 +81,9 @@ showHelp () {
     echo "  vol [show]                   # Shows the current Spotify volume.";
     echo;
     echo "  status                       # Shows the current player status.";
+    echo "  status artist                # Shows the currently playing artist.";
+    echo "  status album                 # Shows the currently playing album.";
+    echo "  status track                 # Shows the currently playing track.";
     echo;
     echo "  share                        # Displays the current song's Spotify URL and URI."
     echo "  share url                    # Displays the current song's Spotify URL and copies it to the clipboard."
@@ -98,12 +101,21 @@ cecho(){
     echo $bold$green"$1"$reset;
 }
 
+showArtist() {
+    echo `osascript -e 'tell application "Spotify" to artist of current track as string'`;
+}
+
+showAlbum() {
+    echo `osascript -e 'tell application "Spotify" to album of current track as string'`;
+}
+
+showTrack() {
+    echo `osascript -e 'tell application "Spotify" to name of current track as string'`;
+}
+
 showStatus () {
     state=`osascript -e 'tell application "Spotify" to player state as string'`;
     cecho "Spotify is currently $state.";
-    artist=`osascript -e 'tell application "Spotify" to artist of current track as string'`;
-    album=`osascript -e 'tell application "Spotify" to album of current track as string'`;
-    track=`osascript -e 'tell application "Spotify" to name of current track as string'`;
     duration=`osascript -e 'tell application "Spotify"
             set durSec to (duration of current track / 1000) as text
             set tM to (round (durSec / 60) rounding down) as text
@@ -127,7 +139,7 @@ showStatus () {
             end tell
             return nowAt'`;
 
-    echo -e $reset"Artist: $artist\nAlbum: $album\nTrack: $track \nPosition: $position / $duration";
+    echo -e $reset"Artist: $(showArtist)\nAlbum: $(showAlbum)\nTrack: $(showTrack) \nPosition: $position / $duration";
 }
 
 if [ $# = 0 ]; then
@@ -364,7 +376,25 @@ while [ $# -gt 0 ]; do
             break ;;
 
         "status" )
-            showStatus;
+            if [ $# != 1 ]; then
+                # There are additional arguments, a status subcommand
+                case $2 in
+                    "artist" )
+                        showArtist;
+                        break ;;
+
+                    "album" )
+                        showAlbum;
+                        break ;;
+
+                    "track" )
+                        showTrack;
+                        break ;;
+                esac
+            else
+                # status is the only param
+                showStatus;
+            fi
             break ;;
 
         "info" )

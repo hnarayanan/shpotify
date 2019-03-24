@@ -82,6 +82,9 @@ spotify vol <amount>               Sets the volume to an amount between 0 and 10
 spotify vol [show]                 Shows the current volume.
 
 spotify status                     Shows the play status, including the current song details.
+spotify status artist              Shows the currently playing artist.
+spotify status album               Shows the currently playing album.
+spotify status track               Shows the currently playing track.
 
 spotify share                      Displays the current song's Spotify URL and URI.
 spotify share url                  Displays the current song's Spotify URL and copies it to the clipboard.
