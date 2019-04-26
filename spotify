@@ -234,18 +234,18 @@ while [ $# -gt 0 ]; do
 
                         results=$( \
                             curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=playlist&limit=10&offset=0" -H "Accept: application/json" -H "Authorization: Bearer ${SPOTIFY_ACCESS_TOKEN}" \
-                            | grep -E -o "spotify:user:[a-zA-Z0-9_]+:playlist:[a-zA-Z0-9]+" -m 10 \
+                            | grep -E -o "spotify:playlist:[a-zA-Z0-9]+" -m 10 \
                         )
 
                         count=$( \
-                            echo "$results" | grep -c "spotify:user" \
+                            echo "$results" | grep -c "spotify:playlist" \
                         )
 
                         if [ "$count" -gt 0 ]; then
                             random=$(( $RANDOM % $count));
 
                             SPOTIFY_PLAY_URI=$( \
-                                echo "$results" | awk -v random="$random" '/spotify:user:[a-zA-Z0-9]+:playlist:[a-zA-Z0-9]+/{i++}i==random{print; exit}' \
+                                echo "$results" | awk -v random="$random" '/spotify:playlist:[a-zA-Z0-9]+/{i++}i==random{print; exit}' \
                             )
                         fi;;
 
