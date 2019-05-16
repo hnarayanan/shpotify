@@ -151,8 +151,8 @@ else
 	fi
 
     if [ $(osascript -e 'application "Spotify" is running') = "false" ]; then
-        osascript -e 'tell application "Spotify" to activate' || exit 1
-        sleep 2
+        echo "The Spotify application must be started."
+        exit 1
     fi
 fi
 while [ $# -gt 0 ]; do
