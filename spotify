@@ -197,7 +197,7 @@ while [ $# -gt 0 ]; do
                     fi
                     SPOTIFY_ACCESS_TOKEN=$( \
                         printf "${SPOTIFY_TOKEN_RESPONSE_DATA}" \
-                        | grep -E -o '"access_token":".*",' \
+                        | command grep -E -o '"access_token":".*",' \
                         | sed 's/"access_token"://g' \
                         | sed 's/"//g' \
                         | sed 's/,.*//g' \
@@ -218,7 +218,7 @@ while [ $# -gt 0 ]; do
                             -H "Accept: application/json" \
                             --data-urlencode "q=$Q" \
                             -d "type=$type&limit=1&offset=0" \
-                        | grep -E -o "spotify:$type:[a-zA-Z0-9]+" -m 1
+                        | command grep -E -o "spotify:$type:[a-zA-Z0-9]+" -m 1
                     )
                     echo "play uri: ${SPOTIFY_PLAY_URI}"
                 }
@@ -234,11 +234,11 @@ while [ $# -gt 0 ]; do
 
                         results=$( \
                             curl -s -G $SPOTIFY_SEARCH_API --data-urlencode "q=$Q" -d "type=playlist&limit=10&offset=0" -H "Accept: application/json" -H "Authorization: Bearer ${SPOTIFY_ACCESS_TOKEN}" \
-                            | grep -E -o "spotify:playlist:[a-zA-Z0-9]+" -m 10 \
+                            | command grep -E -o "spotify:playlist:[a-zA-Z0-9]+" -m 10 \
                         )
 
                         count=$( \
-                            echo "$results" | grep -c "spotify:playlist" \
+                            echo "$results" | command grep -c "spotify:playlist" \
                         )
 
                         if [ "$count" -gt 0 ]; then
