@@ -117,6 +117,11 @@ reported](https://github.com/hnarayanan/shpotify/issues) and
 request](https://help.github.com/articles/using-pull-requests/). **Thank
 you!**
 
+## Related projects
+
+- [Maestro](http://maestromakesyou.dance) - A Slack-Powered music bot for Spotify
+- [Oh-My-Zsh plugin](https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/osx) - A plugin for oh-my-zsh
+
 ## Copyright and license
 
 Copyright (c) 2012–2019 [Harish Narayanan](https://harishnarayanan.org).
