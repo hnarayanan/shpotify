@@ -145,7 +145,7 @@ showStatus () {
 if [ $# = 0 ]; then
     showHelp;
 else
-	if [ ! -d /Applications/Spotify.app ] && [ ! -d $HOME/Applications/Spotify.app ]; then
+	if [ ! $(mdfind "kMDItemKind == 'Application'" | /usr/local/bin/ggrep "Spotify.app") &>/dev/null ]; then
 		echo "The Spotify application must be installed."
 		exit 1
 	fi
