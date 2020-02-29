@@ -80,10 +80,11 @@ showHelp () {
     echo "  vol <amount>                 # Sets the volume to an amount between 0 and 100.";
     echo "  vol [show]                   # Shows the current Spotify volume.";
     echo;
-    echo "  status                       # Shows the current player status.";
+    echo "  status                       # Shows the current player status and details of the currently playing track.";
     echo "  status artist                # Shows the currently playing artist.";
     echo "  status album                 # Shows the currently playing album.";
     echo "  status track                 # Shows the currently playing track.";
+    echo "  status player                # Shows the current status of the player.";
     echo;
     echo "  share                        # Displays the current song's Spotify URL and URI."
     echo "  share url                    # Displays the current song's Spotify URL and copies it to the clipboard."
@@ -111,6 +112,10 @@ showAlbum() {
 
 showTrack() {
     echo `osascript -e 'tell application "Spotify" to name of current track as string'`;
+}
+
+showPlayerStatus(){
+    echo `osascript -e 'tell application "Spotify" to player state as string'`;
 }
 
 showStatus () {
@@ -389,6 +394,10 @@ while [ $# -gt 0 ]; do
 
                     "track" )
                         showTrack;
+                        break ;;
+
+                    "player" )
+                        showPlayerStatus;
                         break ;;
                 esac
             else
