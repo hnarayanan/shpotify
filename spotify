@@ -34,6 +34,9 @@ if ! [[ -f "${USER_CONFIG_FILE}" ]]; then
 fi
 source "${USER_CONFIG_FILE}";
 
+# Set the percent change in volume for vol up and vol down
+VOL_INCREMENT=10
+
 showAPIHelp() {
     echo;
     echo "Connecting to Spotify's API:";
@@ -332,16 +335,16 @@ while [ $# -gt 0 ]; do
                 cecho "Current Spotify volume level is $vol.";
                 break ;
             elif [ "$2" = "up" ]; then
-                if [ $vol -le 90 ]; then
-                    newvol=$(( vol+10 ));
+              if [ $vol -le $(( 100-$VOL_INCREMENT )) ]; then
+                    newvol=$(( vol+$VOL_INCREMENT ));
                     cecho "Increasing Spotify volume to $newvol.";
                 else
                     newvol=100;
                     cecho "Spotify volume level is at max.";
                 fi
             elif [ "$2" = "down" ]; then
-                if [ $vol -ge 10 ]; then
-                    newvol=$(( vol-10 ));
+                if [ $vol -ge $(( $VOL_INCREMENT )) ]; then
+                    newvol=$(( vol-$VOL_INCREMENT ));
                     cecho "Reducing Spotify volume to $newvol.";
                 else
                     newvol=0;
@@ -353,8 +356,8 @@ while [ $# -gt 0 ]; do
             else
                 echo "Improper use of 'vol' command"
                 echo "The 'vol' command should be used as follows:"
-                echo "  vol up                       # Increases the volume by 10%.";
-                echo "  vol down                     # Decreases the volume by 10%.";
+                echo "  vol up                       # Increases the volume by $VOL_INCREMENT%.";
+                echo "  vol down                     # Decreases the volume by $VOL_INCREMENT%.";
                 echo "  vol [amount]                 # Sets the volume to an amount between 0 and 100.";
                 echo "  vol                          # Shows the current Spotify volume.";
                 exit 1;
