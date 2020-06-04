@@ -94,6 +94,8 @@ showHelp () {
     echo;
     echo "  toggle shuffle               # Toggles shuffle playback mode.";
     echo "  toggle repeat                # Toggles repeat playback mode.";
+    echo;
+    echo "  list uri <format> <uri>      # List uri,title,artist and album of specific playlist, format in csv|tsv|text|html";
     showAPIHelp
 }
 
@@ -114,6 +116,18 @@ showAlbum() {
 
 showTrack() {
     echo `osascript -e 'tell application "Spotify" to name of current track as string'`;
+}
+
+showTrackList() {
+  SPOTIFY_PLAYLIST_ID=`echo ${SPOTIFY_PLAYLIST_URI} | awk -F : '{print $3}'`
+  TrackList=$( \
+    curl -s -G  "https://api.spotify.com/v1/playlists/${SPOTIFY_PLAYLIST_ID}/tracks" \
+     -H "Accept: application/json" \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer ${SPOTIFY_ACCESS_TOKEN} " \
+     | jq -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[].name, .track.album.name] | @'$format'' \
+     )
+  cecho "$TrackList"
 }
 
 showStatus () {
@@ -143,6 +157,31 @@ showStatus () {
             return nowAt'`;
 
     echo -e $reset"Artist: $(showArtist)\nAlbum: $(showAlbum)\nTrack: $(showTrack) \nPosition: $position / $duration";
+}
+
+getAccessToken() {
+    cecho "Connecting to Spotify's API";
+
+    SPOTIFY_TOKEN_RESPONSE_DATA=$( \
+        curl "${SPOTIFY_TOKEN_URI}" \
+            --silent \
+            -X "POST" \
+            -H "Authorization: Basic ${SHPOTIFY_CREDENTIALS}" \
+            -d "grant_type=client_credentials" \
+    )
+    if ! [[ "${SPOTIFY_TOKEN_RESPONSE_DATA}" =~ "access_token" ]]; then
+        cecho "Autorization failed, please check ${USER_CONFG_FILE}"
+        cecho "${SPOTIFY_TOKEN_RESPONSE_DATA}"
+        showAPIHelp
+        exit 1
+    fi
+    SPOTIFY_ACCESS_TOKEN=$( \
+        printf "${SPOTIFY_TOKEN_RESPONSE_DATA}" \
+        | command grep -E -o '"access_token":".*",' \
+        | sed 's/"access_token"://g' \
+        | sed 's/"//g' \
+        | sed 's/,.*//g' \
+    )
 }
 
 if [ $# = 0 ]; then
@@ -181,31 +220,6 @@ while [ $# -gt 0 ]; do
                 fi
                 SHPOTIFY_CREDENTIALS=$(printf "${CLIENT_ID}:${CLIENT_SECRET}" | base64 | tr -d "\n"|tr -d '\r');
                 SPOTIFY_PLAY_URI="";
-
-                getAccessToken() {
-                    cecho "Connecting to Spotify's API";
-
-                    SPOTIFY_TOKEN_RESPONSE_DATA=$( \
-                        curl "${SPOTIFY_TOKEN_URI}" \
-                            --silent \
-                            -X "POST" \
-                            -H "Authorization: Basic ${SHPOTIFY_CREDENTIALS}" \
-                            -d "grant_type=client_credentials" \
-                    )
-                    if ! [[ "${SPOTIFY_TOKEN_RESPONSE_DATA}" =~ "access_token" ]]; then
-                        cecho "Autorization failed, please check ${USER_CONFG_FILE}"
-                        cecho "${SPOTIFY_TOKEN_RESPONSE_DATA}"
-                        showAPIHelp
-                        exit 1
-                    fi
-                    SPOTIFY_ACCESS_TOKEN=$( \
-                        printf "${SPOTIFY_TOKEN_RESPONSE_DATA}" \
-                        | command grep -E -o '"access_token":".*",' \
-                        | sed 's/"access_token"://g' \
-                        | sed 's/"//g' \
-                        | sed 's/,.*//g' \
-                    )
-                }
 
                 searchAndPlay() {
                     type="$1"
@@ -397,6 +411,28 @@ while [ $# -gt 0 ]; do
             else
                 # status is the only param
                 showStatus;
+            fi
+            break ;;
+
+        "list" )
+            if [ $# != 1 ]; then
+                # There are additional arguments, a status subcommand
+                case $2 in
+                    "uri" )
+                        array=( $@ );
+                        len=${#array[@]};
+                        SPOTIFY_TOKEN_URI="https://accounts.spotify.com/api/token";
+                        SHPOTIFY_CREDENTIALS=$(printf "${CLIENT_ID}:${CLIENT_SECRET}" | base64 | tr -d "\n"|tr -d '\r');
+                        getAccessToken;
+                        SPOTIFY_PLAYLIST_URI=${array[@]:2:$len};
+                        if [[ "$3" == "csv" || "$3" == "tsv" || "$3" == "text" || "$3" == "html" ]]; then
+                          format=$3
+                        else
+                          format="csv"
+                        fi
+                        showTrackList;
+                        break ;;
+                esac
             fi
             break ;;
 

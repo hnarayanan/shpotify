@@ -92,6 +92,8 @@ spotify share uri                  Displays the current song's Spotify URI and c
 
 spotify toggle shuffle             Toggles shuffle playback mode.
 spotify toggle repeat              Toggles repeat playback mode.
+
+spotify list uri <format> <uri>    List uri,title,artist and album of specific playlist, format in csv|tsv|text|html"
 ````
 
 ## Authors and contributing
