@@ -94,8 +94,10 @@ showHelp () {
     echo;
     echo "  toggle shuffle               # Toggles shuffle playback mode.";
     echo "  toggle repeat                # Toggles repeat playback mode.";
+    if [ $jq_installed = "true" ];then
     echo;
     echo "  list uri <format> <uri>      # List uri,title,artist and album of specific playlist-uri, format in csv|tsv|text|html";
+    fi
     showAPIHelp
 }
 
@@ -184,6 +186,13 @@ getAccessToken() {
     )
 }
 
+## Check existence of jq
+if [ -x "$(command -v jq)" ]; then
+  jq_installed="true"
+else
+  jq_installed="false"
+fi
+
 if [ $# = 0 ]; then
     showHelp;
 else
@@ -197,6 +206,7 @@ else
         sleep 2
     fi
 fi
+
 while [ $# -gt 0 ]; do
     arg=$1;
 
@@ -415,24 +425,28 @@ while [ $# -gt 0 ]; do
             break ;;
 
         "list" )
-            if [ $# != 1 ]; then
-                # There are additional arguments, a status subcommand
-                case $2 in
-                    "uri" )
-                        array=( $@ );
-                        len=${#array[@]};
-                        SPOTIFY_TOKEN_URI="https://accounts.spotify.com/api/token";
-                        SHPOTIFY_CREDENTIALS=$(printf "${CLIENT_ID}:${CLIENT_SECRET}" | base64 | tr -d "\n"|tr -d '\r');
-                        getAccessToken;
-                        SPOTIFY_PLAYLIST_URI=${array[@]:2:$len};
-                        if [[ "$3" == "csv" || "$3" == "tsv" || "$3" == "text" || "$3" == "html" ]]; then
-                          format=$3
-                        else
-                          format="csv"
-                        fi
-                        showTrackList;
-                        break ;;
-                esac
+            if [[ $jq_installed == "false" ]];then
+              echo "Unfortunately the 'list' option will not function without 'jq', a json parser. It can be installed with \"brew install jq\""
+            else
+              if [ $# != 1 ]; then
+                  # There are additional arguments, a status subcommand
+                  case $2 in
+                      "uri" )
+                          array=( $@ );
+                          len=${#array[@]};
+                          SPOTIFY_TOKEN_URI="https://accounts.spotify.com/api/token";
+                          SHPOTIFY_CREDENTIALS=$(printf "${CLIENT_ID}:${CLIENT_SECRET}" | base64 | tr -d "\n"|tr -d '\r');
+                          getAccessToken;
+                          SPOTIFY_PLAYLIST_URI=${array[@]:2:$len};
+                          if [[ "$3" == "csv" || "$3" == "tsv" || "$3" == "text" || "$3" == "html" ]]; then
+                            format=$3
+                          else
+                            format="csv"
+                          fi
+                          showTrackList;
+                          break ;;
+                  esac
+              fi
             fi
             break ;;
 
