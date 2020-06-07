@@ -34,6 +34,9 @@ if ! [[ -f "${USER_CONFIG_FILE}" ]]; then
 fi
 source "${USER_CONFIG_FILE}";
 
+SHPOTIFY_CREDENTIALS=$(printf "${CLIENT_ID}:${CLIENT_SECRET}" | base64 | tr -d "\n"|tr -d '\r');
+
+
 # Set the percent change in volume for vol up and vol down
 VOL_INCREMENT=10
 
@@ -97,6 +100,8 @@ showHelp () {
     if [ $jq_installed = "true" ];then
     echo;
     echo "  list uri <format> <uri>      # List uri,title,artist and album of specific playlist-uri, format in csv|tsv|text|html";
+    echo "  list mine <format>*          # List 'my' playlists (uri, title, public), format in csv|tsv|texst|html";
+    echo "                               # * Please note that this requires authentication via a browser."
     fi
     showAPIHelp
 }
@@ -132,6 +137,17 @@ showTrackList() {
   cecho "$TrackList"
 }
 
+showMyPlaylists() {
+  MyPlaylists=$( \
+    curl -s -G  "https://api.spotify.com/v1/me/playlists?limit=20" \
+      -H "Accept: application/json" \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
+      | jq -r --arg format "$format" '.items[] | [ .uri, .name, .public] | @'$format'' \
+  )
+  cecho "$MyPlaylists"
+}
+
 showStatus () {
     state=`osascript -e 'tell application "Spotify" to player state as string'`;
     cecho "Spotify is currently $state.";
@@ -159,6 +175,54 @@ showStatus () {
             return nowAt'`;
 
     echo -e $reset"Artist: $(showArtist)\nAlbum: $(showAlbum)\nTrack: $(showTrack) \nPosition: $position / $duration";
+}
+
+getUserAccessToken() {
+  ## Based on a gist by Hugh Rawlinson (https://gist.github.com/hughrawlinson/358afa57a04c8c0f1ce4f1fd86604a73)
+  port=8082
+  redirect_uri=http%3A%2F%2Flocalhost%3A$port%2F
+  auth_endpoint=https://accounts.spotify.com/authorize/?response_type=code\&client_id=$CLIENT_ID\&redirect_uri=$redirect_uri
+  # TODO return cached access token if scopes match and it hasn't expired
+  # TODO get scopes from args
+  scopes="playlist-read-private"
+  if [[ ! -z $scopes ]]
+  then
+    encoded_scopes=$(echo $scopes| tr ' ' '%' | sed s/%/%20/g)
+    # If scopes exists, then append them to auth_endpoint
+    auth_endpoint=$auth_endpoint\&scope=$encoded_scopes
+  fi
+
+  # If refresh_token exists and is valid for scopes, use refresh flow. No new login required
+  if [[ -r "/var/tmp/shpotify_refresh_token" ]];then
+    refresh_token=$(cat "/var/tmp/shpotify_refresh_token");
+    response=$(curl -s https://accounts.spotify.com/api/token \
+      -H "Content-Type:application/x-www-form-urlencoded" \
+      -H "Authorization: Basic $(echo -n $CLIENT_ID:$CLIENT_SECRET | base64)" \
+      -d "grant_type=refresh_token" \
+      -d "refresh_token=$refresh_token" \
+      )
+  else
+    open $auth_endpoint
+    # User is now authenticating on accounts.spotify.com...
+
+    # Now the user gets redirected to our endpoint
+    # Grab token and close browser window
+    ### DM: closinig of window/tab doesn't work that well...
+    response=$(echo "HTTP/1.1 200 OK\nAccess-Control-Allow-Origin:*\nContent-Length:65\n\n<html><script>open(location, '_self').close();</script></html>\n" | nc -l -c $port)
+    code=$(echo "$response" | grep GET | cut -d' ' -f 2 | cut -d'=' -f 2)
+
+    response=$(curl -s https://accounts.spotify.com/api/token \
+      -H "Content-Type:application/x-www-form-urlencoded" \
+      -H "Authorization: Basic ${SHPOTIFY_CREDENTIALS}" \
+      -d "grant_type=authorization_code&code=$code&redirect_uri=http%3A%2F%2Flocalhost%3A$port%2F")
+
+    ## refresh token only given during original authentication.
+    # Store the refrehs_token for later use
+    echo $response | jq -r '.refresh_token' > /var/tmp/shpotify_refresh_token
+  fi
+
+  # Output cache access token
+  SPOTIFY_USER_ACCESS_TOKEN=$(echo $response | jq -r '.access_token')
 }
 
 getAccessToken() {
@@ -430,21 +494,23 @@ while [ $# -gt 0 ]; do
             else
               if [ $# != 1 ]; then
                   # There are additional arguments, a status subcommand
+                  if [[ "$3" == "csv" || "$3" == "tsv" || "$3" == "text" || "$3" == "html" ]]; then
+                    format=$3
+                  else
+                    format="csv"
+                  fi
                   case $2 in
                       "uri" )
                           array=( $@ );
                           len=${#array[@]};
                           SPOTIFY_TOKEN_URI="https://accounts.spotify.com/api/token";
-                          SHPOTIFY_CREDENTIALS=$(printf "${CLIENT_ID}:${CLIENT_SECRET}" | base64 | tr -d "\n"|tr -d '\r');
                           getAccessToken;
                           SPOTIFY_PLAYLIST_URI=${array[@]:2:$len};
-                          if [[ "$3" == "csv" || "$3" == "tsv" || "$3" == "text" || "$3" == "html" ]]; then
-                            format=$3
-                          else
-                            format="csv"
-                          fi
                           showTrackList;
                           break ;;
+                      "mine" )
+                          getUserAccessToken;
+                          showMyPlaylists;
                   esac
               fi
             fi
