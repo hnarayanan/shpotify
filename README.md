@@ -95,7 +95,8 @@ spotify toggle repeat              Toggles repeat playback mode.
 
 spotify list uri <format> <uri>    List uri,title,artist and album of specific playlist, format in csv|tsv|text|html"
 spotify list mine <format>*        List 'my' playlists (uri, title, public), format in csv|tsv|texst|html";
-echo "                             * Please note that this requires authentication via a browser."
+                                   * Please note that this requires authentication via a browser."
+spotify -v | --verision            Shows the shpotify and spotify versions.";
 ````
 
 ## Authors and contributing
