@@ -102,6 +102,7 @@ showHelp () {
     echo;
     echo "  list uri <format> <uri>      # List uri,title,artist and album of specific playlist-uri, format in csv|tsv|text|html";
     echo "  list mine <format>*          # List 'my' playlists (uri, title, public), format in csv|tsv|texst|html";
+    echo "  list history <format>*       # List 30 last played tracks (uri, title, artist, album), format in csv|tsv|text|html";
     echo "                               # * Please note that this requires authentication via a browser.";
     echo "  list devices <format>        # List devices to play Spotify on. Devices must be active to be seen.";
     echo;
@@ -157,6 +158,17 @@ showMyPlaylists() {
       | jq -r --arg format "$format" '.items[] | [ .uri, .name, .public] | @'$format'' \
   )
   cecho "$MyPlaylists"
+}
+
+showMyHistory() {
+  MyHistory=$( \
+    curl -s -G  "https://api.spotify.com/v1/me/player/recently-played?limit=30" \
+      -H "Accept: application/json" \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
+      | jq -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' \
+  )
+  cecho "$MyHistory"
 }
 
 showMyDevices() {
@@ -217,7 +229,7 @@ getUserAccessToken() {
   auth_endpoint=https://accounts.spotify.com/authorize/?response_type=code\&client_id=$CLIENT_ID\&redirect_uri=$redirect_uri
   # TODO return cached access token if scopes match and it hasn't expired
   # TODO get scopes from args
-  scopes="playlist-read-private user-read-playback-state user-modify-playback-state"
+  scopes="playlist-read-private user-read-playback-state user-modify-playback-state user-read-recently-played"
   if [[ ! -z $scopes ]]
   then
     encoded_scopes=$(echo $scopes| tr ' ' '%' | sed s/%/%20/g)
@@ -541,10 +553,17 @@ while [ $# -gt 0 ]; do
                           SPOTIFY_PLAYLIST_URI=${array[@]:2:$len};
                           showTrackList;
                           break ;;
+
+                      "history" )
+                          getUserAccessToken;
+                          showMyHistory;
+                          break ;;
+
                       "mine" )
                           getUserAccessToken;
                           showMyPlaylists;
                           break ;;
+
                       "devices" )
                           getUserAccessToken;
                           showMyDevices;
@@ -641,6 +660,7 @@ while [ $# -gt 0 ]; do
         "-v" | "--version" )
             showVersion | column -t;
             break ;;
+
         * )
             showHelp;
             exit 1;
