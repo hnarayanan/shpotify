@@ -102,6 +102,9 @@ showHelp () {
     echo "  list uri <format> <uri>      # List uri,title,artist and album of specific playlist-uri, format in csv|tsv|text|html";
     echo "  list mine <format>*          # List 'my' playlists (uri, title, public), format in csv|tsv|texst|html";
     echo "                               # * Please note that this requires authentication via a browser.";
+    echo "  list devices <format>        # List devices to play Spotify on. Devices must be active to be seen.";
+    echo;
+    echo "  connect <device_id>          # Connect and play music on another device. ID can be found with 'list devices'.";
     fi
     showAPIHelp
 }
