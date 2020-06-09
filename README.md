@@ -44,6 +44,9 @@ following a few simple steps:
 shpotify needs to connect to Spotify’s API in order to find music by
 name. It is very likely you want this feature!
 
+Spotify API has a 'public' part, for which developer/app are sufficient,
+and it has a 'private' part, for which 'user authorization' is required.
+
 To get this to work, you first need to sign up (or into) Spotify’s
 developer site and [create an *Application*][spotify-dev]. Once you’ve
 done so, you can find its `Client ID` and `Client Secret` values and
@@ -56,6 +59,16 @@ done, it should look like the following (but with your own values):
 CLIENT_ID="abc01de2fghijk345lmnop"
 CLIENT_SECRET="qr6stu789vwxyz"
 ````
+
+If 'user authentication' is required, a spotify website will open in your
+default browser asking for permission. After granting permission, a new
+'localhost' site will be opened on port 8082 with a code in the URL. This code
+is caught by Shpotify and is used to get the user-access code and user-refresh
+token. From now it is possible to get information linked to your account, like
+your playlists, history, devices, etc.
+
+_note: thise page is supposed to automatically close, but that doesn't always
+work properly._ 
 
 ## Usage
 
@@ -95,7 +108,7 @@ spotify toggle repeat              Toggles repeat playback mode.
 
 spotify list uri <format> <uri>    List uri,title,artist and album of specific playlist, format in csv|tsv|text|html"
 spotify list mine <format>*        List 'my' playlists (uri, title, public), format in csv|tsv|text|html";
-spotify list history <format>*     List last played tracks (uri, title, artist, album), format in csv|tsv|text|html
+spotify list history <format>*     List 30 last played tracks (uri, title, artist, album), format in csv|tsv|text|html
                                    * Please note that this requires authentication via a browser."
 spotify -v | --version             Shows the shpotify and spotify versions.";
 ````
