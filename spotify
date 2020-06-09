@@ -101,7 +101,10 @@ showHelp () {
     echo;
     echo "  list uri <format> <uri>      # List uri,title,artist and album of specific playlist-uri, format in csv|tsv|text|html";
     echo "  list mine <format>*          # List 'my' playlists (uri, title, public), format in csv|tsv|texst|html";
-    echo "                               # * Please note that this requires authentication via a browser."
+    echo "                               # * Please note that this requires authentication via a browser.";
+    echo "  list devices <format>        # List devices to play Spotify on. Devices must be active to be seen.";
+    echo;
+    echo "  connect <device_id>          # Connect and play music on another device. ID can be found with 'list devices'.";
     fi
     showAPIHelp
 }
@@ -148,6 +151,28 @@ showMyPlaylists() {
   cecho "$MyPlaylists"
 }
 
+showMyDevices() {
+  MyDevices=$( \
+    curl -s -G  "https://api.spotify.com/v1/me/player/devices" \
+      -H "Accept: application/json" \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
+      |  jq -r --arg format "$format" '.devices[] | [ .id, .name, .type, .is_active, .volume_percent ] | @'$format'' \
+  )
+  cecho "$MyDevices"
+}
+
+selectDevice() {
+  curl -X "PUT" "https://api.spotify.com/v1/me/player" \
+   --data "{\"device_ids\":[\"${device_id}\"]}" \
+   -H "Accept: application/json" \
+   -H "Content-Type: application/json" \
+   -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}"
+
+   sleep 2
+   osascript -e 'tell application "Spotify" to play';
+}
+
 showStatus () {
     state=`osascript -e 'tell application "Spotify" to player state as string'`;
     cecho "Spotify is currently $state.";
@@ -184,7 +209,7 @@ getUserAccessToken() {
   auth_endpoint=https://accounts.spotify.com/authorize/?response_type=code\&client_id=$CLIENT_ID\&redirect_uri=$redirect_uri
   # TODO return cached access token if scopes match and it hasn't expired
   # TODO get scopes from args
-  scopes="playlist-read-private"
+  scopes="playlist-read-private user-read-playback-state user-modify-playback-state"
   if [[ ! -z $scopes ]]
   then
     encoded_scopes=$(echo $scopes| tr ' ' '%' | sed s/%/%20/g)
@@ -511,7 +536,25 @@ while [ $# -gt 0 ]; do
                       "mine" )
                           getUserAccessToken;
                           showMyPlaylists;
+                          break ;;
+                      "devices" )
+                          getUserAccessToken;
+                          showMyDevices;
+                          break ;;
                   esac
+              fi
+            fi
+            break ;;
+
+        "connect" )
+            if [[ $jq_installed == "false" ]];then
+              echo "Unfortunately the 'connect' option will not function without 'jq', a json parser. It can be installed with \"brew install jq\""
+            else
+              if [ $# != 1 ]; then
+                  # There are additional arguments, a status subcommand
+                  device_id=$2
+                  getUserAccessToken;
+                  selectDevice;
               fi
             fi
             break ;;
