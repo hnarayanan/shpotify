@@ -94,9 +94,10 @@ spotify toggle shuffle             Toggles shuffle playback mode.
 spotify toggle repeat              Toggles repeat playback mode.
 
 spotify list uri <format> <uri>    List uri,title,artist and album of specific playlist, format in csv|tsv|text|html"
-spotify list mine <format>*        List 'my' playlists (uri, title, public), format in csv|tsv|texst|html";
+spotify list mine <format>*        List 'my' playlists (uri, title, public), format in csv|tsv|text|html";
+spotify list history <format>*     List last played tracks (uri, title, artist, album), format in csv|tsv|text|html
                                    * Please note that this requires authentication via a browser."
-spotify -v | --verision            Shows the shpotify and spotify versions.";
+spotify -v | --version             Shows the shpotify and spotify versions.";
 ````
 
 ## Authors and contributing
