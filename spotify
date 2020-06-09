@@ -144,7 +144,7 @@ showTrackList() {
      -H "Accept: application/json" \
      -H "Content-Type: application/json" \
      -H "Authorization: Bearer ${SPOTIFY_ACCESS_TOKEN} " \
-     | jq -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[].name, .track.album.name] | @'$format'' \
+     | jq -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' \
      )
   cecho "$TrackList"
 }
