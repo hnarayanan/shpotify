@@ -91,7 +91,7 @@ showHelp () {
     echo "  status artist                # Shows the currently playing artist.";
     echo "  status album                 # Shows the currently playing album.";
     echo "  status track                 # Shows the currently playing track.";
-    echo "  status liked <uri>*          # Shows of a track or album is liked.";
+    echo "  status liked <uri>*          # Shows if a track or album is liked or not.";
     echo;
     echo "  share                        # Displays the current song's Spotify URL and URI."
     echo "  share url                    # Displays the current song's Spotify URL and copies it to the clipboard."
@@ -101,7 +101,7 @@ showHelp () {
     echo "  toggle repeat                # Toggles repeat playback mode.";
     if [ $jq_installed = "true" ];then
     echo;
-    echo "  list uri <format> <uri>      # List information about track, album or playlist uri. Format in csv|tsv|text|html";
+    echo "  list uri <format> <uri>      # List information about track, album or playlist by uri. Format in csv|tsv|text|html";
     echo "  list myalbums <format>*      # List 50 of your last liked albums, format in csv|tsv|text|html";
     echo "  list mytracks <format>*      # List 50 of your last liked songs, format in csv|tsv|text|html";
     echo "  list mine <format>*          # List 'my' playlists (uri, title, public), format in csv|tsv|texst|html";
@@ -251,6 +251,14 @@ likeURI() {
   else
    cecho "oops, you try to like a ${URI_TYPE}, but that's not possible for now."
   fi
+}
+
+queueTrack() {
+  curl -X "POST" "https://api.spotify.com/v1/me/player/queue?uri=${URI}" \
+   -H "Accept: application/json" \
+   -H "Content-Type: application/json" \
+   -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" && \
+   cecho "Queued `showURIinfo`"
 }
 
 
@@ -698,6 +706,15 @@ while [ $# -gt 0 ]; do
                   selectDevice;
               fi
             fi
+            break ;;
+
+        "queue" | "q" )
+            array=( $@ );
+            len=${#array[@]};
+            URI=${array[@]:1:$len};
+            format="tsv"
+            getUserAccessToken;
+            queueTrack;
             break ;;
 
         "info" )
