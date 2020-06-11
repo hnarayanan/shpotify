@@ -200,6 +200,40 @@ showMyLiked() {
   cecho "$MyLiked"
 }
 
+showURIinfo() {
+  read URI_TYPE URI_ID <<<$(echo "$1" | awk -F ":" '{print $2,$3}')
+  URI_INFO=$( \
+    curl -s -G  "https://api.spotify.com/v1/${URI_TYPE}s/${URI_ID}" \
+      -H "Accept: application/json" \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
+  )
+
+  format=csv
+  if [[ $URI_TYPE == "track" ]];then
+    URI_INFO=$(echo "$URI_INFO" | jq -r --arg format "$format" '[.name, .artists[0].name, .album.name] | @csv' )
+  else
+    URI_INFO=$(echo "$URI_INFO" | jq -r --arg format "$format" '.items[] | [ .album.uri, .album.artists[0].name, .album.name, .album.label, .album.release_date, .album.total_tracks, .album.popularity] | @'$format'' )
+  fi
+
+  cecho "${URI_INFO}"
+}
+
+likeURI() {
+
+  read URI_TYPE URI_ID <<<$(echo "$1" | awk -F ":" '{print $2,$3}')
+  # TODO: check if already liked
+  # TODO: test with albums
+  curl -X "PUT" "https://api.spotify.com/v1/me/${URI_TYPE}s?ids=${URI_ID}" \
+   -H "Accept: application/json" \
+   -H "Content-Type: application/json" \
+   -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}"
+
+   sleep 1
+   cecho " The following ${URI_TYPE} has been liked: "
+   showURIinfo ${1}
+}
+
 
 selectDevice() {
   curl -X "PUT" "https://api.spotify.com/v1/me/player" \
@@ -248,7 +282,7 @@ getUserAccessToken() {
   auth_endpoint=https://accounts.spotify.com/authorize/?response_type=code\&client_id=$CLIENT_ID\&redirect_uri=$redirect_uri
   # TODO return cached access token if scopes match and it hasn't expired
   # TODO get scopes from args
-  scopes="playlist-read-private user-read-playback-state user-modify-playback-state user-read-recently-played user-library-read"
+  scopes="playlist-read-private user-read-playback-state user-modify-playback-state user-read-recently-played user-library-read user-library-modify"
   if [[ ! -z $scopes ]]
   then
     encoded_scopes=$(echo $scopes| tr ' ' '%' | sed s/%/%20/g)
@@ -602,6 +636,20 @@ while [ $# -gt 0 ]; do
                   esac
               fi
             fi
+            break ;;
+
+        "like" )
+            array=( $@ );
+            len=${#array[@]};
+            URIs=${array[@]:1:$len};
+            getUserAccessToken;
+            # echo "$URIs"
+            for i in $URIs
+            do
+              likeURI ${i};
+            done
+            #SPOTIFY_TOKEN_URI="https://accounts.spotify.com/api/token";
+            #likeURI
             break ;;
 
         "connect" )
