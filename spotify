@@ -208,12 +208,27 @@ while [ $# -gt 0 ]; do
                 }
 
                 searchAndPlay() {
+                    spinner=( '⠦' '⠧' '⠇' '⠏' '⠋' '⠉' '⠙' '⠹' '⠸' '⠼' '⠴' '⠤' '⠦' '⠧' '⠯' '⠏' '⠛' '⠹' '⠽' '⠼' '⠶' );
                     type="$1"
                     Q="$2"
 
                     getAccessToken;
 
                     cecho "Searching ${type}s for: $Q";
+
+                    loading() {
+                        while [ 1 ]
+                        do 
+                            for i in ${spinner3[@]}; 
+                            do 
+                            echo -ne "\r$i";
+                            sleep 0.05;
+                            done;
+                        done
+                    }
+
+                    loading &
+                    pid=$!; 
 
                     SPOTIFY_PLAY_URI=$( \
                         curl -s -G $SPOTIFY_SEARCH_API \
@@ -223,7 +238,11 @@ while [ $# -gt 0 ]; do
                             -d "type=$type&limit=1&offset=0" \
                         | command grep -E -o "spotify:$type:[a-zA-Z0-9]+" -m 1
                     )
-                    echo "play uri: ${SPOTIFY_PLAY_URI}"
+
+                    disown $pid
+                    kill -9 $pid
+
+                    echo " Found → ${SPOTIFY_PLAY_URI}"
                 }
 
                 case $2 in
@@ -268,7 +287,7 @@ while [ $# -gt 0 ]; do
                     if [ "$2" = "uri" ]; then
                         cecho "Playing Spotify URI: $SPOTIFY_PLAY_URI";
                     else
-                        cecho "Playing ($Q Search) -> Spotify URI: $SPOTIFY_PLAY_URI";
+                        cecho "▶️ Playing ($Q)";
                     fi
 
                     osascript -e "tell application \"Spotify\" to play track \"$SPOTIFY_PLAY_URI\"";
