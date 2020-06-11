@@ -98,6 +98,7 @@ spotify status                     Shows the play status, including the current 
 spotify status artist              Shows the currently playing artist.
 spotify status album               Shows the currently playing album.
 spotify status track               Shows the currently playing track.
+spotify status liked <uri>*        Shows if a track or album is liked or not.
 
 spotify share                      Displays the current song's Spotify URL and URI.
 spotify share url                  Displays the current song's Spotify URL and copies it to the clipboard.
@@ -106,13 +107,17 @@ spotify share uri                  Displays the current song's Spotify URI and c
 spotify toggle shuffle             Toggles shuffle playback mode.
 spotify toggle repeat              Toggles repeat playback mode.
 
-spotify list uri <format> <uri>    List uri,title,artist and album of specific playlist, format in csv|tsv|text|html"
+spotify list uri <format> <uri>    List information about track, album or playlist by uri. Format in csv|tsv|text|html"
 spotify list myalbums <format>*    List 50 of your last liked albums, format in csv|tsv|text|html";
 spotify list mytracks <format>*    List 50 of your last liked songs, format in csv|tsv|text|html";
 spotify list mine <format>*        List 'my' playlists (uri, title, public), format in csv|tsv|text|html";
 spotify list history <format>*     List 30 last played tracks (uri, title, artist, album), format in csv|tsv|text|html
-                                   * Please note that this requires authentication via a browser."
+
+spotify like <uri>*                Like a song or album and add it to your library.";
+
 spotify -v | --version             Shows the shpotify and spotify versions.";
+
+* Please note that this requires authentication via a browser."
 ````
 
 ## Authors and contributing
