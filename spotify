@@ -183,7 +183,7 @@ while [ $# -gt 0 ]; do
                 SPOTIFY_PLAY_URI="";
 
                 getAccessToken() {
-                    cecho "Connecting to Spotify's API";
+                    echo -ne "\033[1;32m Connecting to Spotify's API"\\r;
 
                     SPOTIFY_TOKEN_RESPONSE_DATA=$( \
                         curl "${SPOTIFY_TOKEN_URI}" \
@@ -287,7 +287,7 @@ while [ $# -gt 0 ]; do
                     if [ "$2" = "uri" ]; then
                         cecho "Playing Spotify URI: $SPOTIFY_PLAY_URI";
                     else
-                        cecho "▶️ Playing ($Q)";
+                        echo -e "\033[1;32m▶️ Playing ($Q) \n\033[0m";
                     fi
 
                     osascript -e "tell application \"Spotify\" to play track \"$SPOTIFY_PLAY_URI\"";
