@@ -68,7 +68,7 @@ token. From now it is possible to get information linked to your account, like
 your playlists, history, devices, etc.
 
 _note: thise page is supposed to automatically close, but that doesn't always
-work properly._ 
+work properly._
 
 ## Usage
 
@@ -107,6 +107,8 @@ spotify toggle shuffle             Toggles shuffle playback mode.
 spotify toggle repeat              Toggles repeat playback mode.
 
 spotify list uri <format> <uri>    List uri,title,artist and album of specific playlist, format in csv|tsv|text|html"
+spotify list myalbums <format>*    List 50 of your last liked albums, format in csv|tsv|text|html";
+spotify list mytracks <format>*    List 50 of your last liked songs, format in csv|tsv|text|html";
 spotify list mine <format>*        List 'my' playlists (uri, title, public), format in csv|tsv|text|html";
 spotify list history <format>*     List 30 last played tracks (uri, title, artist, album), format in csv|tsv|text|html
                                    * Please note that this requires authentication via a browser."
