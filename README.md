@@ -122,8 +122,8 @@ spotify -v | --version             Shows the shpotify and spotify versions.";
 
 ## Authors and contributing
 
-shpotify is primarily written and maintained by [Harish
-Narayanan](https://harishnarayanan.org).
+shpotify is primarily written ~~and maintained by~~ [Harish
+Narayanan](https://harishnarayanan.org). This fork is developed and maintained by David Markus
 
 Since it’s an open source project, it contains numerous contributions
 from many helpful people, including:
@@ -145,7 +145,8 @@ you!**
 
 ## Copyright and license
 
-Copyright (c) 2012–2020 [Harish Narayanan](https://harishnarayanan.org).
+Copyright (c) 2012–2020 [Harish Narayanan](https://harishnarayanan.org)
+Copyright (c) 2020 David Markus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
