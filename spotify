@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#set -x
+
 # Copyright (c) 2012--2020 Harish Narayanan <mail@harishnarayanan.org>
 #
 # Contains numerous helpful contributions from Jorge Colindres, Thomas
@@ -91,6 +91,7 @@ showHelp () {
     echo "  status artist                # Shows the currently playing artist.";
     echo "  status album                 # Shows the currently playing album.";
     echo "  status track                 # Shows the currently playing track.";
+    echo "  status liked <uri>*          # Shows of a track or album is liked.";
     echo;
     echo "  share                        # Displays the current song's Spotify URL and URI."
     echo "  share url                    # Displays the current song's Spotify URL and copies it to the clipboard."
@@ -100,18 +101,20 @@ showHelp () {
     echo "  toggle repeat                # Toggles repeat playback mode.";
     if [ $jq_installed = "true" ];then
     echo;
-    echo "  list uri <format> <uri>      # List uri,title,artist and album of specific playlist-uri, format in csv|tsv|text|html";
+    echo "  list uri <format> <uri>      # List information about track, album or playlist uri. Format in csv|tsv|text|html";
     echo "  list myalbums <format>*      # List 50 of your last liked albums, format in csv|tsv|text|html";
     echo "  list mytracks <format>*      # List 50 of your last liked songs, format in csv|tsv|text|html";
     echo "  list mine <format>*          # List 'my' playlists (uri, title, public), format in csv|tsv|texst|html";
     echo "  list history <format>*       # List 30 last played tracks (uri, title, artist, album), format in csv|tsv|text|html";
     echo "  list devices <format>*       # List devices to play Spotify on. Devices must be active to be seen.";
-    echo "                               # * Please note that this requires authentication via a browser.";
+    echo;
+    echo "  like <uri>*                  # Like a song or album and add it to your library.";
     echo;
     echo "  connect <device_id>          # Connect and play music on another device. ID can be found with 'list devices'.";
     fi
     echo;
     echo "  -v | --version               # Shows the shpotify and spotify versions.";
+    echo "* Please note that this requires authentication via a browser.";
     showAPIHelp
 }
 
@@ -137,18 +140,6 @@ showAlbum() {
 
 showTrack() {
     echo `osascript -e 'tell application "Spotify" to name of current track as string'`;
-}
-
-showTrackList() {
-  SPOTIFY_PLAYLIST_ID=${SPOTIFY_PLAYLIST_URI##*:}
-  TrackList=$( \
-    curl -s -G  "https://api.spotify.com/v1/playlists/${SPOTIFY_PLAYLIST_ID}/tracks" \
-     -H "Accept: application/json" \
-     -H "Content-Type: application/json" \
-     -H "Authorization: Bearer ${SPOTIFY_ACCESS_TOKEN} " \
-     | jq -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' \
-     )
-  cecho "$TrackList"
 }
 
 showMyPlaylists() {
@@ -200,6 +191,68 @@ showMyLiked() {
   cecho "$MyLiked"
 }
 
+checkLiked() {
+  read URI_TYPE URI_ID <<<$(echo "$URI" | awk -F ":" '{print $2,$3}')
+  ItIsLiked=$(
+    curl -s -G  "https://api.spotify.com/v1/me/${URI_TYPE}s/contains?ids=${URI_ID}" \
+      -H "Accept: application/json" \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
+      )
+}
+
+showURIinfo() {
+  read URI_TYPE URI_ID <<<$(echo "$URI" | awk -F ":" '{print $2,$3}')
+  if [[ $URI_TYPE == "playlist" ]];then
+    SPOTIFY_TOKEN_URI="https://accounts.spotify.com/api/token";
+    getAccessToken
+    URI_INFO=$( \
+      curl -s -G  "https://api.spotify.com/v1/${URI_TYPE}s/${URI_ID}/tracks" \
+      -H "Accept: application/json" \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer ${SPOTIFY_ACCESS_TOKEN} "
+      )
+  else
+    getUserAccessToken
+    URI_INFO=$( \
+      curl -s -G  "https://api.spotify.com/v1/${URI_TYPE}s/${URI_ID}" \
+      -H "Accept: application/json" \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
+      )
+  fi
+
+#  format=csv
+  if [[ $URI_TYPE == "playlist" ]];then
+    URI_INFO=$(echo "$URI_INFO" | jq -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' )
+  elif [[ $URI_TYPE == "track" ]];then
+    URI_INFO=$(echo "$URI_INFO" | jq -r --arg format "$format" '[.uri, .name, .artists[0].name, .album.name] | @'$format'' )
+  else
+    URI_INFO=$(echo "$URI_INFO" | jq -r --arg format "$format" '[.uri, .name, .artists[0].name, .release_date] | @'$format'' )
+  fi
+
+  cecho "${URI_INFO}"
+}
+
+likeURI() {
+
+  read URI_TYPE URI_ID <<<$(echo "$URI" | awk -F ":" '{print $2,$3}')
+  if [[ $URI_TYPE ==  "track" || $URI_TYPE == "album" ]];then
+    checkLiked
+    if [[ $ItIsLiked == "[ true ]" ]];then
+      cecho "oops, you already like `showURIinfo`"
+    else
+      curl -X "PUT" "https://api.spotify.com/v1/me/${URI_TYPE}s?ids=${URI_ID}" \
+       -H "Accept: application/json" \
+       -H "Content-Type: application/json" \
+       -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}"
+      showURIinfo
+    fi
+  else
+   cecho "oops, you try to like a ${URI_TYPE}, but that's not possible for now."
+  fi
+}
+
 
 selectDevice() {
   curl -X "PUT" "https://api.spotify.com/v1/me/player" \
@@ -248,7 +301,7 @@ getUserAccessToken() {
   auth_endpoint=https://accounts.spotify.com/authorize/?response_type=code\&client_id=$CLIENT_ID\&redirect_uri=$redirect_uri
   # TODO return cached access token if scopes match and it hasn't expired
   # TODO get scopes from args
-  scopes="playlist-read-private user-read-playback-state user-modify-playback-state user-read-recently-played user-library-read"
+  scopes="playlist-read-private user-read-playback-state user-modify-playback-state user-read-recently-played user-library-read user-library-modify"
   if [[ ! -z $scopes ]]
   then
     encoded_scopes=$(echo $scopes| tr ' ' '%' | sed s/%/%20/g)
@@ -545,6 +598,24 @@ while [ $# -gt 0 ]; do
                     "track" )
                         showTrack;
                         break ;;
+
+                    "liked" )
+                        array=( $@ );
+                        len=${#array[@]};
+                        URIs=${array[@]:2:$len};
+                        format="tsv";
+                        getUserAccessToken;
+                        for URI in $URIs;
+                        do
+                          checkLiked;
+                          if [[ $ItIsLiked == "[ true ]" ]];then
+                            cecho "You like: `showURIinfo`"
+                          else
+                            cecho "You don't like (yet): `showURIinfo`"
+                          fi
+                        done
+                        break ;;
+
                 esac
             else
                 # status is the only param
@@ -561,16 +632,14 @@ while [ $# -gt 0 ]; do
                   if [[ "$3" == "csv" || "$3" == "tsv" || "$3" == "text" || "$3" == "html" ]]; then
                     format=$3
                   else
-                    format="csv"
+                    format="tsv"
                   fi
                   case $2 in
                       "uri" )
                           array=( $@ );
                           len=${#array[@]};
-                          SPOTIFY_TOKEN_URI="https://accounts.spotify.com/api/token";
-                          getAccessToken;
-                          SPOTIFY_PLAYLIST_URI=${array[@]:2:$len};
-                          showTrackList;
+                          URI=${array[@]:2:$len};
+                          showURIinfo;
                           break ;;
 
                       "history" )
@@ -602,6 +671,20 @@ while [ $# -gt 0 ]; do
                   esac
               fi
             fi
+            break ;;
+
+        "like" )
+            array=( $@ );
+            len=${#array[@]};
+            URIs=${array[@]:1:$len};
+            format="tsv"
+            getUserAccessToken;
+            cecho "You like: "
+            for URI in $URIs
+            do
+              likeURI;
+              sleep 1
+            done
             break ;;
 
         "connect" )
