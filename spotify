@@ -28,7 +28,7 @@
 
 SHPOTIFY_VERSION="2.1.1_DM_fork"
 USER_CONFIG_DEFAULTS="CLIENT_ID=\"\"\nCLIENT_SECRET=\"\"";
-USER_CONFIG_FILE="${HOME}/.shpotify.cfg";
+USER_CONFIG_FILE=${SHPOTIFY_CONFIG_FILE:-${HOME}/.shpotify.cfg}
 if ! [[ -f "${USER_CONFIG_FILE}" ]]; then
     touch "${USER_CONFIG_FILE}";
     echo -e "${USER_CONFIG_DEFAULTS}" > "${USER_CONFIG_FILE}";
