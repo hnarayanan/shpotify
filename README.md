@@ -146,6 +146,7 @@ you!**
 ## Copyright and license
 
 Copyright (c) 2012–2020 [Harish Narayanan](https://harishnarayanan.org)
+
 Copyright (c) 2020 David Markus
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
