@@ -60,6 +60,18 @@ showAPIHelp() {
     echo '  CLIENT_SECRET="qr6stu789vwxyz"';
 }
 
+showAUTHelp() {
+    echo;
+    echo "Authenticating to Spotify:";
+    echo;
+    echo " Some commands (marked with *) require shpotify to be authenticated via the browser";
+    echo " To make this work, http://localhost:8082/ needs to be added as a redirect_uri in"
+    echo " the 'Application' settings you just created at the developer site. "
+    echo;
+    echo " The auth-token will be saved /var/tmp/shpotify_refresh_token. In case of authentication"
+    echo " issues it might help to remove this file to force re-authentication."
+}
+
 showHelp () {
     echo "Usage:";
     echo;
@@ -116,6 +128,7 @@ showHelp () {
     echo "  -v | --version               # Shows the shpotify and spotify versions.";
     echo "* Please note that this requires authentication via a browser.";
     showAPIHelp
+    showAUTHelp
 }
 
 showVersion() {
