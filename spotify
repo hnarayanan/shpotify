@@ -169,7 +169,7 @@ showMyPlaylists() {
       -H "Accept: application/json" \
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
-      | jq -r --arg format "$format" '.items[] | [ .uri, .name, .public] | @'$format'' \
+      | $JQ -r --arg format "$format" '.items[] | [ .uri, .name, .public] | @'$format'' \
   )
   cecho "$MyPlaylists"
 }
@@ -180,7 +180,7 @@ showMyHistory() {
       -H "Accept: application/json" \
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
-      | jq -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' \
+      | $JQ -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' \
   )
   cecho "$MyHistory"
 }
@@ -191,7 +191,7 @@ showMyDevices() {
       -H "Accept: application/json" \
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
-      |  jq -r --arg format "$format" '.devices[] | [ .id, .name, .type, .is_active, .volume_percent ] | @'$format'' \
+      |  $JQ -r --arg format "$format" '.devices[] | [ .id, .name, .type, .is_active, .volume_percent ] | @'$format'' \
   )
   cecho "$MyDevices"
 }
@@ -205,9 +205,9 @@ showMyLiked() {
   )
 
   if [[ $likefilter == "tracks" ]];then
-    MyLiked=$(echo "$MyLiked" | jq -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' )
+    MyLiked=$(echo "$MyLiked" | $JQ -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' )
   else
-    MyLiked=$(echo "$MyLiked" | jq -r --arg format "$format" '.items[] | [ .album.uri, .album.artists[0].name, .album.name, .album.label, .album.release_date, .album.total_tracks, .album.popularity] | @'$format'' )
+    MyLiked=$(echo "$MyLiked" | $JQ -r --arg format "$format" '.items[] | [ .album.uri, .album.artists[0].name, .album.name, .album.label, .album.release_date, .album.total_tracks, .album.popularity] | @'$format'' )
   fi
   cecho "$MyLiked"
 }
@@ -245,11 +245,11 @@ showURIinfo() {
 
 #  format=csv
   if [[ $URI_TYPE == "playlist" ]];then
-    URI_INFO=$(echo "$URI_INFO" | jq -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' )
+    URI_INFO=$(echo "$URI_INFO" | $JQ -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' )
   elif [[ $URI_TYPE == "track" ]];then
-    URI_INFO=$(echo "$URI_INFO" | jq -r --arg format "$format" '[.uri, .name, .artists[0].name, .album.name] | @'$format'' )
+    URI_INFO=$(echo "$URI_INFO" | $JQ -r --arg format "$format" '[.uri, .name, .artists[0].name, .album.name] | @'$format'' )
   else
-    URI_INFO=$(echo "$URI_INFO" | jq -r --arg format "$format" '[.uri, .name, .artists[0].name, .release_date] | @'$format'' )
+    URI_INFO=$(echo "$URI_INFO" | $JQ -r --arg format "$format" '[.uri, .name, .artists[0].name, .release_date] | @'$format'' )
   fi
 
   cecho "${URI_INFO}"
@@ -364,11 +364,11 @@ getUserAccessToken() {
 
     ## refresh token only given during original authentication.
     # Store the refrehs_token for later use
-    echo $response | jq -r '.refresh_token' > /var/tmp/shpotify_refresh_token
+    echo $response | $JQ -r '.refresh_token' > /var/tmp/shpotify_refresh_token
   fi
 
   # Output cache access token
-  SPOTIFY_USER_ACCESS_TOKEN=$(echo $response | jq -r '.access_token')
+  SPOTIFY_USER_ACCESS_TOKEN=$(echo $response | $JQ -r '.access_token')
 }
 
 getAccessToken() {
@@ -397,7 +397,8 @@ getAccessToken() {
 }
 
 ## Check existence of jq
-if [ -x "$(command -v jq)" ]; then
+JQ=$(command -v jq)
+if [ -x $JQ ]; then
   jq_installed="true"
 else
   jq_installed="false"
