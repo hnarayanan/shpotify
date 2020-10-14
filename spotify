@@ -397,10 +397,16 @@ getAccessToken() {
 }
 
 ## Check existence of jq
-JQ=$(command -v jq)
-if [ -x $JQ ]; then
+if [ -x "$(command -v jq)" ]; then
+  # JQ in path, set JQ:
+  JQ=$(command -v jq)
+  jq_installed="true"
+elif [ -x "$(find /bin /usr/local/bin -name jq 2> /dev/null)" ]; then
+  # JQ not in path, but found with find in usual suspects
+  JQ=$(find /bin /usr/local/bin -name jq 2> /dev/null)
   jq_installed="true"
 else
+  # no JQ found
   jq_installed="false"
 fi
 
