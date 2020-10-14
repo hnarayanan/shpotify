@@ -402,8 +402,8 @@ if [ -x "$(command -v jq)" ]; then
   JQ=$(command -v jq)
   jq_installed="true"
 elif [ -x "$(find /bin /usr/local/bin -name jq 2> /dev/null)" ]; then
-  # JQ not in path, but found with find in usual suspects
-  JQ=$(find /bin /usr/local/bin -name jq 2> /dev/null)
+  # in case /usr/local/bin is not in $PATH
+  JQ=$(find /usr/local/bin -name jq 2> /dev/null)
   jq_installed="true"
 else
   # no JQ found
