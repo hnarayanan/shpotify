@@ -78,10 +78,12 @@ showHelp () {
     echo "  stop                         # Stops playback.";
     echo "  quit                         # Stops playback and quits Spotify.";
     echo;
-    echo "  vol up                       # Increases the volume by 10%.";
-    echo "  vol down                     # Decreases the volume by 10%.";
+    echo "  vol up                       # Increases the volume by $VOL_INCREMENT%.";
+    echo "  vol down                     # Decreases the volume by $VOL_INCREMENT%.";
     echo "  vol <amount>                 # Sets the volume to an amount between 0 and 100.";
     echo "  vol [show]                   # Shows the current Spotify volume.";
+    echo "  vol inc                      # Shows the current volume increment value.";
+    echo "  vol inc <amount>             # Sets the volume incrementer to an amount between 0 and 100.";
     echo;
     echo "  status                       # Shows the current player status.";
     echo "  status artist                # Shows the currently playing artist.";
@@ -331,7 +333,8 @@ while [ $# -gt 0 ]; do
 
         "vol"    )
             if [[ $2 = "inc" ]]; then
-                if [[ $# -gt 2 ]]; then
+            elif ; then
+                if [[ $# -gt 2 ]] && [[ $3 =~ ^[0-9]+$ ]] && [[ $3 -ge 0 && $3 -le 100 ]]; then
                     VOL_INCREMENT=$3;
                     echo "CLIENT_ID=${CLIENT_ID}" > $USER_CONFIG_FILE
                     echo "CLIENT_SECRET=${CLIENT_SECRET}" >> $USER_CONFIG_FILE
@@ -368,8 +371,10 @@ while [ $# -gt 0 ]; do
                 echo "The 'vol' command should be used as follows:"
                 echo "  vol up                       # Increases the volume by $VOL_INCREMENT%.";
                 echo "  vol down                     # Decreases the volume by $VOL_INCREMENT%.";
-                echo "  vol [amount]                 # Sets the volume to an amount between 0 and 100.";
-                echo "  vol                          # Shows the current Spotify volume.";
+                echo "  vol <amount>                 # Sets the volume to an amount between 0 and 100.";
+                echo "  vol [show]                   # Shows the current Spotify volume.";
+                echo "  vol inc                      # Shows the current volume increment value.";
+                echo "  vol inc <amount>             # Sets the volume incrementer to an amount between 0 and 100.";
                 exit 1;
             fi
 
