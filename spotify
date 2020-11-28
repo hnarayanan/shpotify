@@ -222,17 +222,32 @@ checkLiked() {
       )
 }
 
+getURIplaylist() {
+  URI_INFO=$( \
+    curl -s -G  "https://api.spotify.com/v1/${URI_TYPE}s/${URI_ID}/tracks?limit=${1}&offset=${2}"\
+    -H "Accept: application/json" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${SPOTIFY_ACCESS_TOKEN} "
+
+    )
+}
+
 showURIinfo() {
   read URI_TYPE URI_ID <<<$(echo "$URI" | awk -F ":" '{print $2,$3}')
   if [[ $URI_TYPE == "playlist" ]];then
     SPOTIFY_TOKEN_URI="https://accounts.spotify.com/api/token";
     getAccessToken
-    URI_INFO=$( \
-      curl -s -G  "https://api.spotify.com/v1/${URI_TYPE}s/${URI_ID}/tracks" \
-      -H "Accept: application/json" \
-      -H "Content-Type: application/json" \
-      -H "Authorization: Bearer ${SPOTIFY_ACCESS_TOKEN} "
-      )
+    getURIplaylist 100 0
+
+    total_tracks=$(echo $URI_INFO | $JQ -r '.total')
+
+    if [[ $total_tracks > 100 ]];then
+      for (( OFFSET=100; OFFSET<=${total_tracks}; OFFSET+=100 )); do
+        URI_INFOorg=$(echo "$URI_INFO")
+        getURIplaylist 100 ${OFFSET}
+        URI_INFO=$(echo "$URI_INFOorg";echo "$URI_INFO")
+      done
+    fi
   else
     getUserAccessToken
     URI_INFO=$( \
@@ -242,6 +257,8 @@ showURIinfo() {
       -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
       )
   fi
+
+#echo "$URI_INFO" > json.out
 
 #  format=csv
   if [[ $URI_TYPE == "playlist" ]];then
