@@ -194,8 +194,7 @@ showMine() {
     getMine 50 0
 
     total_items=$(echo "$MyOutput" | $JQ -r '.total')
-
-    if [[ $total_items > 50 ]];then
+    if [[ $total_items -gt '50' ]];then
       for (( OFFSET=50; OFFSET<=${total_items}; OFFSET+=50 ));do
         MyOutputOrg=$(echo "$MyOutput")
         getMine 50 ${OFFSET}
