@@ -133,6 +133,7 @@ showHelp () {
     echo;
     echo "  connect <device_id>          # Connect and play music on another device. ID can be found with 'list devices'.";
     fi
+    echo "  queue <uri>                  # Queue one or more songs by uri, space separated."
     echo;
     echo "  -v | --version               # Shows the shpotify and spotify versions.";
     echo "* Please note that this requires authentication via a browser.";
@@ -307,7 +308,7 @@ queueTrack() {
    -H "Accept: application/json" \
    -H "Content-Type: application/json" \
    -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" && \
-   cecho "Queued `showURIinfo`"
+   cecho "`showURIinfo`"
 }
 
 
@@ -358,7 +359,7 @@ getUserAccessToken() {
   auth_endpoint=https://accounts.spotify.com/authorize/?response_type=code\&client_id=$CLIENT_ID\&redirect_uri=$redirect_uri
   # TODO return cached access token if scopes match and it hasn't expired
   # TODO get scopes from args
-  scopes="playlist-read-private user-read-playback-state user-modify-playback-state user-read-recently-played user-library-read user-library-modify"
+  scopes="playlist-read-private user-read-playback-state user-modify-playback-state user-read-recently-played user-library-read user-library-modify user-top-read"
   if [[ ! -z $scopes ]]
   then
     encoded_scopes=$(echo $scopes| tr ' ' '%' | sed s/%/%20/g)
@@ -686,7 +687,6 @@ while [ $# -gt 0 ]; do
                 showStatus;
             fi
             break ;;
-
         "list" )
             if [[ $jq_installed == "false" ]];then
               echo "Unfortunately the 'list' option will not function without 'jq', a json parser. It can be installed with \"brew install jq\""
@@ -771,10 +771,15 @@ while [ $# -gt 0 ]; do
         "queue" | "q" )
             array=( $@ );
             len=${#array[@]};
-            URI=${array[@]:1:$len};
+            URIs=${array[@]:1:$len};
             format="tsv"
             getUserAccessToken;
-            queueTrack;
+            cecho "You queued: "
+            for URI in $URIs
+            do
+              queueTrack;
+              sleep 1
+            done
             break ;;
 
         "info" )
