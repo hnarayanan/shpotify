@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#set -x
 
 # Copyright (c) 2012--2020 Harish Narayanan <mail@harishnarayanan.org>
 #
@@ -163,28 +164,6 @@ showTrack() {
     echo `osascript -e 'tell application "Spotify" to name of current track as string'`;
 }
 
-showMyPlaylists() {
-  MyPlaylists=$( \
-    curl -s -G  "https://api.spotify.com/v1/me/playlists?limit=20" \
-      -H "Accept: application/json" \
-      -H "Content-Type: application/json" \
-      -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
-      | $JQ -r --arg format "$format" '.items[] | [ .uri, .name, .public] | @'$format'' \
-  )
-  cecho "$MyPlaylists"
-}
-
-showMyHistory() {
-  MyHistory=$( \
-    curl -s -G  "https://api.spotify.com/v1/me/player/recently-played?limit=30" \
-      -H "Accept: application/json" \
-      -H "Content-Type: application/json" \
-      -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
-      | $JQ -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' \
-  )
-  cecho "$MyHistory"
-}
-
 showMyDevices() {
   MyDevices=$( \
     curl -s -G  "https://api.spotify.com/v1/me/player/devices" \
@@ -196,20 +175,52 @@ showMyDevices() {
   cecho "$MyDevices"
 }
 
-showMyLiked() {
-  MyLiked=$( \
-    curl -s -G  "https://api.spotify.com/v1/me/${likefilter}?limit=50" \
+## Consolidate 'show mine':
+### Devices -
+
+getMine() {
+  MyOutput=$( \
+    curl -s -G  "https://api.spotify.com/v1/me/${myfilter}?limit=${1}&offset=${2}" \
       -H "Accept: application/json" \
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
   )
+}
 
-  if [[ $likefilter == "tracks" ]];then
-    MyLiked=$(echo "$MyLiked" | $JQ -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' )
+showMine() {
+  getUserAccessToken
+  if [[ ${myfilter} == "tracks" ]] || [[ ${myfilter} == "playlists" ]] || [[ ${myfilter} == "albums" ]] ;then
+    getMine 50 0
+
+    total_items=$(echo "$MyOutput" | $JQ -r '.total')
+
+    if [[ $total_items > 50 ]];then
+      for (( OFFSET=50; OFFSET<=${total_items}; OFFSET+=50 ));do
+        MyOutputOrg=$(echo "$MyOutput")
+        getMine 50 ${OFFSET}
+        MyOutput=$(echo "$MyOutputOrg";echo "$MyOutput")
+      done
+    fi
   else
-    MyLiked=$(echo "$MyLiked" | $JQ -r --arg format "$format" '.items[] | [ .album.uri, .album.artists[0].name, .album.name, .album.label, .album.release_date, .album.total_tracks, .album.popularity] | @'$format'' )
+
+    MyOutput=$( \
+      curl -s -G  "https://api.spotify.com/v1/me/${myfilter}?limit=50" \
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
+    )
   fi
-  cecho "$MyLiked"
+
+    if [[ $myfilter == "tracks" ]];then
+      MyOutput=$(echo "$MyOutput" | $JQ -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' )
+    elif [[ $myfilter == "playlists" ]];then
+      MyOutput=$(echo "$MyOutput" | $JQ -r --arg format "$format" '.items[] | [ .uri, .name, .public] | @'$format'' )
+    elif [[ $myfilter == "player/recently-played" ]];then
+      MyOutput=$(echo "$MyOutput" | $JQ -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' )
+    else
+      MyOutput=$(echo "$MyOutput" | $JQ -r --arg format "$format" '.items[] | [ .album.uri, .album.artists[0].name, .album.name, .album.label, .album.release_date, .album.total_tracks, .album.popularity] | @'$format'' )
+    fi
+    cecho "$MyOutput"
 }
 
 checkLiked() {
@@ -695,26 +706,30 @@ while [ $# -gt 0 ]; do
                           showURIinfo;
                           break ;;
 
-                      "history" )
+                      "history" | "recently-played" )
                           getUserAccessToken;
-                          showMyHistory;
+                          #showMyHistory;
+                          myfilter="player/recently-played";
+                          showMine;
                           break ;;
 
                       "mysongs" | "songs" | "tracks" )
                           getUserAccessToken;
-                          likefilter="tracks"
-                          showMyLiked;
+                          myfilter="tracks"
+                          showMine;
                           break ;;
 
                       "myalbums" | "albums" )
                           getUserAccessToken;
-                          likefilter="albums"
-                          showMyLiked;
+                          myfilter="albums"
+                          showMine;
                           break ;;
 
-                      "mine" )
+                      "mine" | "playlists" | "lists" )
                           getUserAccessToken;
-                          showMyPlaylists;
+                          #showMyPlaylists;
+                          myfilter="playlists";
+                          showMine;
                           break ;;
 
                       "devices" )
