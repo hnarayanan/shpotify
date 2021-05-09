@@ -124,7 +124,7 @@ showHelp () {
     echo;
     echo "  list uri <format> <uri>      # List information about track, album or playlist by uri. Format in csv|tsv|text|html";
     echo "  list myalbums <format>*      # List 50 of your last liked albums, format in csv|tsv|text|html";
-    echo "  list mytracks <format>*      # List 50 of your last liked songs, format in csv|tsv|text|html";
+    echo "  list mysongs <format>*       # List 50 of your last liked songs, format in csv|tsv|text|html";
     echo "  list mine <format>*          # List 'my' playlists (uri, title, public), format in csv|tsv|texst|html";
     echo "  list history <format>*       # List 30 last played tracks (uri, title, artist, album), format in csv|tsv|text|html";
     echo "  list devices <format>*       # List devices to play Spotify on. Devices must be active to be seen.";
@@ -247,7 +247,6 @@ showURIinfo() {
   read URI_TYPE URI_ID <<<$(echo "$URI" | awk -F ":" '{print $2,$3}')
   if [[ $URI_TYPE == "playlist" ]];then
     getAccessToken
-    SPOTIFY_TOKEN_URI="https://accounts.spotify.com/api/token";
     getURIplaylist 100 0
 
     total_tracks=$(echo $URI_INFO | $JQ -r '.total')
@@ -405,7 +404,7 @@ getUserAccessToken() {
 
 getAccessToken() {
     cecho "Connecting to Spotify's API";
-
+    SPOTIFY_TOKEN_URI="https://accounts.spotify.com/api/token";
     SPOTIFY_TOKEN_RESPONSE_DATA=$( \
         curl "${SPOTIFY_TOKEN_URI}" \
             --silent \
