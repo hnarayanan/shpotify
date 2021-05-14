@@ -128,10 +128,12 @@ showHelp () {
     echo "  list mine <format>*          # List 'my' playlists (uri, title, public), format in csv|tsv|texst|html";
     echo "  list history <format>*       # List 30 last played tracks (uri, title, artist, album), format in csv|tsv|text|html";
     echo "  list devices <format>*       # List devices to play Spotify on. Devices must be active to be seen.";
+    echo "  list genres <format>*        # List genres to 'match' music with."
     echo;
     echo "  like <uri>*                  # Like a song or album and add it to your library.";
     echo;
     echo "  connect <device_id>          # Connect and play music on another device. ID can be found with 'list devices'.";
+    echo "  match <seed>                 # Match recomendations based on seed, which can be track uri, artis uri or genre, min 1 / max 5, command separated."
     fi
     echo "  queue <uri>                  # Queue one or more songs by uri, space separated."
     echo;
@@ -269,7 +271,6 @@ showURIinfo() {
   fi
 
 #echo "$URI_INFO" > json.out
-
 #  format=csv
   if [[ $URI_TYPE == "playlist" ]];then
     URI_INFO=$(echo "$URI_INFO" | $JQ -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' )
@@ -309,8 +310,7 @@ queueTrack() {
   curl -X "POST" "https://api.spotify.com/v1/me/player/queue?uri=${URI}" \
    -H "Accept: application/json" \
    -H "Content-Type: application/json" \
-   -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" && \
-   cecho "`showURIinfo`"
+   -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}"
 }
 
 
@@ -352,6 +352,67 @@ showStatus () {
             return nowAt'`;
 
     echo -e $reset"Artist: $(showArtist)\nAlbum: $(showAlbum)\nTrack: $(showTrack) \nPosition: $position / $duration";
+}
+
+showGenres () {
+
+  Genres=$( \
+    curl -s -X "GET" "https://api.spotify.com/v1/recommendations/available-genre-seeds" \
+    -H "Accept: application/json" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
+  | $JQ -r '.genres[]' )
+  cecho "$Genres"
+}
+
+matchSeed () {
+
+  ## check playstatus, might result in errors if paused...
+  state=`osascript -e 'tell application "Spotify" to player state as string'`;
+  if [[ $state == "paused" ]];then
+    echo " Works best if not paused as it might generate errors about not finding a playback device. "
+    exit 1
+  fi
+
+  ### filter seeds (comma: %2C)
+  tracks=`echo "$1" | awk -F ",|:" '{for(i=1;i<=NF;i++) if ($i=="track") print $(i+1)}' ORS=%2C | awk 'BEGIN{FS=OFS="%2C"} {$(NF-1)=$(NF-1) "" $NF; NF--} 1'`
+  artists=`echo "$1" | awk -F ",|:" '{for(i=1;i<=NF;i++) if ($i=="artist") print $(i+1)}' ORS=%2C | awk 'BEGIN{FS=OFS="%2C"} {$(NF-1)=$(NF-1) "" $NF; NF--} 1'`
+  genres=`echo "$1" | awk -F "," '{for(i=1;i<=NF;i++) print $(i)}'| awk '!/spotify/' ORS=%2C | awk 'BEGIN{FS=OFS="%2C"} {$(NF-1)=$(NF-1) "" $NF; NF--} 1'`
+
+  ### create seed variable
+  if [[ $tracks != "" ]];then
+    seed=`echo "seed_tracks=${tracks}"`
+  fi
+  if [[ $artists != "" ]];then
+    if [[ $seed = "" ]];then
+      seed=`echo "seed_artists=${artists}"`
+    else
+      seed=`echo "${seed}&seed_artists=${artists}"`
+    fi
+  fi
+  if [[ $genres != "" ]];then
+    if [[ $seed = "" ]];then
+      seed=`echo "seed_genres=${genres}"`
+    else
+      seed=`echo "${seed}&seed_genres=${genres}"`
+    fi
+  fi
+
+  ### get recomendations
+  seedUris=$(curl -s -X "GET" "https://api.spotify.com/v1/recommendations?limit=10&${seed}&min_instrumentalness=0.35&min_popularity=50" \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" | $JQ -r '.tracks[] | .uri ' | xargs)
+
+  ### add songs to queue
+  cecho " Matched the following songs based on your seed(s) and added to your queue: "
+  for URI in $seedUris
+  do
+    queueTrack;
+    showURIinfo;
+    sleep 1
+  done
+
 }
 
 getUserAccessToken() {
@@ -689,6 +750,11 @@ while [ $# -gt 0 ]; do
                 showStatus;
             fi
             break ;;
+        "match" )
+            format="tsv"
+            getUserAccessToken;
+            matchSeed $2;
+            break ;;
         "list" )
             if [[ $jq_installed == "false" ]];then
               echo "Unfortunately the 'list' option will not function without 'jq', a json parser. It can be installed with \"brew install jq\""
@@ -738,6 +804,11 @@ while [ $# -gt 0 ]; do
                           getUserAccessToken;
                           showMyDevices;
                           break ;;
+
+                      "genres" )
+                          getUserAccessToken;
+                          showGenres;
+                          break ;;
                   esac
               fi
             fi
@@ -780,6 +851,7 @@ while [ $# -gt 0 ]; do
             for URI in $URIs
             do
               queueTrack;
+              cecho "`showURIinfo`"
               sleep 1
             done
             break ;;
