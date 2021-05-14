@@ -60,12 +60,15 @@ CLIENT_ID="abc01de2fghijk345lmnop"
 CLIENT_SECRET="qr6stu789vwxyz"
 ````
 
-If 'user authentication' is required, a spotify website will open in your
-default browser asking for permission. After granting permission, a new
-'localhost' site will be opened on port 8082 with a code in the URL. This code
-is caught by Shpotify and is used to get the user-access code and user-refresh
-token. From now it is possible to get information linked to your account, like
-your playlists, history, devices, etc.
+### Authentication to Spotify
+
+Some commands (marked with *) require shpotify to be authenticated via the browser";
+To make this work, http://localhost:8082/ needs to be added as a redirect_uri in the 'Application' settings you just created at the developer site.
+
+If 'user authentication' is required, a spotify website will open in your default browser asking for permission. After granting permission, a white page on 'http://localhost:8082/' site will be opened with a token in the url. This token is caught by Shpotify and saved in /var/tmp/shpotify_refresh_token. It's now possible to get information linked to your account, like your playlists, history, devices, etc.
+
+In case of authentication issues it might help to remove /var/tmp/shpotify_refresh_token"
+to force re-authentication."
 
 _note: thise page is supposed to automatically close, but that doesn't always
 work properly._
