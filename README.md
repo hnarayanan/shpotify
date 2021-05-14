@@ -80,6 +80,8 @@ spotify vol up                     Increases the volume by 10%.
 spotify vol down                   Decreases the volume by 10%.
 spotify vol <amount>               Sets the volume to an amount between 0 and 100.
 spotify vol [show]                 Shows the current volume.
+spotify vol inc                    Shows the current volume increment value.
+spotify vol inc <amount>           Sets the volume incrementer to an amount between 0 and 100.
 
 spotify status                     Shows the play status, including the current song details.
 spotify status artist              Shows the currently playing artist.
