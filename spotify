@@ -223,7 +223,6 @@ while [ $# -gt 0 ]; do
                             -d "type=$type&limit=1&offset=0" \
                         | command grep -E -o "spotify:$type:[a-zA-Z0-9]+" -m 1
                     )
-                    echo "play uri: ${SPOTIFY_PLAY_URI}"
                 }
 
                 case $2 in
