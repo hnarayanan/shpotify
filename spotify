@@ -246,6 +246,9 @@ getURIplaylist() {
 }
 
 showURIinfo() {
+  if [[ $1 = "uri_only" ]];then
+    URI_ONLY=true
+  fi
   read URI_TYPE URI_ID <<<$(echo "$URI" | awk -F ":" '{print $2,$3}')
   if [[ $URI_TYPE == "playlist" ]];then
     getAccessToken
@@ -271,20 +274,33 @@ showURIinfo() {
   fi
 
 #echo "$URI_INFO" > json.out
+
 #  format=csv
   if [[ $URI_TYPE == "playlist" ]];then
-    URI_INFO=$(echo "$URI_INFO" | $JQ -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' )
+    if [[ $URI_ONLY == "true" ]];then
+      URI_INFO=$(echo "$URI_INFO" | $JQ -r --arg format "$format" '.items[] | [ .track.uri] | @'$format'' )
+    else
+      URI_INFO=$(echo "$URI_INFO" | $JQ -r --arg format "$format" '.items[] | [ .track.uri, .track.name, .track.artists[0].name, .track.album.name] | @'$format'' )
+    fi
   elif [[ $URI_TYPE == "album" ]];then
     URI_ALBUM_INFO=$(echo "$URI_INFO" | $JQ -r --arg format "$format" '[.uri, .artists[0].name, .name, .release_date] | @'$format'' )
     URI_TRACK_INFO=$(echo "$URI_INFO" | $JQ -r --arg format "$format" '.tracks.items[] | [ .uri, .disc_number, .track_number, .name ] | @'$format'' )
     URI_INFO=$(echo "Album:"; echo "$URI_ALBUM_INFO"; echo "Tracks:"; echo "$URI_TRACK_INFO")
   elif [[ $URI_TYPE == "track" ]];then
-    URI_INFO=$(echo "$URI_INFO" | $JQ -r --arg format "$format" '[.uri, .name, .artists[0].name, .album.name] | @'$format'' )
+    if [[ $URI_ONLY == "true" ]];then
+      URI_INFO=$(echo "$URI_INFO" | $JQ -r --arg format "$format" '[.uri] | @'$format'' )
+    else
+      URI_INFO=$(echo "$URI_INFO" | $JQ -r --arg format "$format" '[.uri, .name, .artists[0].name, .album.name] | @'$format'' )
+    fi
   else
     URI_INFO=$(echo "$URI_INFO" | $JQ -r --arg format "$format" '[.uri, .name, .artists[0].name, .release_date] | @'$format'' )
   fi
 
-  cecho "${URI_INFO}"
+  if [[ $URI_ONLY == "true" ]];then # implies use within this script
+    echo "${URI_INFO}"
+  else
+    cecho "${URI_INFO}"
+  fi
 }
 
 likeURI() {
@@ -304,6 +320,81 @@ likeURI() {
   else
    cecho "oops, you try to like a ${URI_TYPE}, but that's not possible for now."
   fi
+}
+
+GetUserProfile() {
+USER_INFO=$( \
+  curl -s -X "GET" "https://api.spotify.com/v1/me" \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}" \
+  )
+
+USER_ID=$(echo "$USER_INFO" | $JQ -r --arg format "tsv" '[.id] | @'tsv'' )
+
+}
+
+PiezoRip() {
+### check if URI is track.
+read URI_TYPE URI_ID <<<$(echo "$URI" | awk -F ":" '{print $2,$3}')
+if [[ $URI_TYPE == "track" ]];then
+  ### check playlist
+    #showMyPlaylists;
+    myfilter="playlists";
+    TRACK_ID=$URI_ID
+    if [[ `showMine | awk '$2 ~ /piezo/'` = "" ]];then
+      ## piezo does not exists
+      GetUserProfile
+      cecho "$USER_ID"
+
+      cecho "creating playlist piezo"
+      curl -X "POST" "https://api.spotify.com/v1/users/${USER_ID}/playlists" \
+       --data "{\"name\":\"piezo\",\"description\":\"one song at time\",\"public\":false}" \
+       -H "Accept: application/json" \
+       -H "Content-Type: application/json" \
+       -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}"
+    fi
+    ## get Uri and check if empty, if not: empty playlist
+    URI=`showMine | awk '$2 ~ /piezo/{print $1}'`
+    piezoID=`echo $URI | awk -F ":" '{print $3}'`
+    if [[ `showURIinfo` != "" ]];then
+      for track in `showURIinfo uri_only`
+      do
+        curl -s -X "DELETE" "https://api.spotify.com/v1/playlists/${piezoID}/tracks" \
+        --data "{\"tracks\":[{\"uri\":\"${track}\"}]}" \
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}"
+      done
+    fi
+    ## add track to playlist:
+    curl -X "POST" "https://api.spotify.com/v1/playlists/${piezoID}/tracks?uris=spotify:track:${TRACK_ID}" \
+    -H "Accept: application/json" \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}"
+
+    echo "Sleeping 10 seconds to give spotify some time..."
+    sleep 10
+
+
+    set -x
+    ## Tell piezo script to rip playlist:
+    python3 /Users/davidem/stuff/shpotify/recordsong2.py $URI
+
+    set +x
+
+    ## Remove track from playlist
+
+else
+  cecho "Unfortunately this only works with tracks..."
+  exit
+fi
+
+  ### if not, create
+### empty playlist
+### add track to playlist
+### call piezo to record playlist
+echo "piezorip"
 }
 
 queueTrack() {
@@ -422,7 +513,7 @@ getUserAccessToken() {
   auth_endpoint=https://accounts.spotify.com/authorize/?response_type=code\&client_id=$CLIENT_ID\&redirect_uri=$redirect_uri
   # TODO return cached access token if scopes match and it hasn't expired
   # TODO get scopes from args
-  scopes="playlist-read-private user-read-playback-state user-modify-playback-state user-read-recently-played user-library-read user-library-modify user-top-read"
+  scopes="playlist-read-private playlist-modify-private user-read-playback-state user-modify-playback-state user-read-recently-played user-library-read user-library-modify user-top-read"
   if [[ ! -z $scopes ]]
   then
     encoded_scopes=$(echo $scopes| tr ' ' '%' | sed s/%/%20/g)
@@ -464,7 +555,7 @@ getUserAccessToken() {
 }
 
 getAccessToken() {
-    cecho "Connecting to Spotify's API";
+    #cecho "Connecting to Spotify's API";
     SPOTIFY_TOKEN_URI="https://accounts.spotify.com/api/token";
     SPOTIFY_TOKEN_RESPONSE_DATA=$( \
         curl "${SPOTIFY_TOKEN_URI}" \
@@ -664,6 +755,7 @@ while [ $# -gt 0 ]; do
 
         "vol"    )
             vol=`osascript -e 'tell application "Spotify" to sound volume as integer'`;
+            echo "vol = $vol"
             if [[ $2 = "" || $2 = "show" ]]; then
                 cecho "Current Spotify volume level is $vol.";
                 break ;
@@ -695,8 +787,13 @@ while [ $# -gt 0 ]; do
                 echo "  vol                          # Shows the current Spotify volume.";
                 exit 1;
             fi
-
-            osascript -e "tell application \"Spotify\" to set sound volume to $newvol";
+            echo "newvol = $newvol"
+            #sascript -e "tell application \"Spotify\" to set sound volume to $newvol";
+            getUserAccessToken
+            curl -X "PUT" "https://api.spotify.com/v1/me/player/volume?volume_percent=${newvol}" \
+             -H "Accept: application/json" \
+             -H "Content-Type: application/json" \
+             -H "Authorization: Bearer ${SPOTIFY_USER_ACCESS_TOKEN}"
             break ;;
 
         "toggle"  )
@@ -921,6 +1018,19 @@ while [ $# -gt 0 ]; do
         "pos"   )
             cecho "Adjusting Spotify play position."
             osascript -e "tell application \"Spotify\" to set player position to $2";
+            break ;;
+
+        "piezo" )
+            array=( $@ );
+            len=${#array[@]};
+            URIs=${array[@]:1:$len};
+            format="tsv"
+            getUserAccessToken;
+            cecho "Lets RIP:  "
+            for URI in $URIs
+            do
+              PiezoRip;
+            done
             break ;;
 
         "help" )
