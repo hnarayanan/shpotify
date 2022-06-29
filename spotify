@@ -27,7 +27,14 @@
 # SOFTWARE.
 
 USER_CONFIG_DEFAULTS="CLIENT_ID=\"\"\nCLIENT_SECRET=\"\"";
-USER_CONFIG_FILE="${HOME}/.shpotify.cfg";
+
+if [[ -z "${XDG_CONFIG_HOME}" ]]; then
+    USER_CONFIG_FILE="${HOME}/.shpotify.cfg";
+else
+    [ ! -d "${XDG_CONFIG_HOME}/shpotify"/ ] && mkdir -p "${XDG_CONFIG_HOME}/shpotify"
+    USER_CONFIG_FILE="$XDG_CONFIG_HOME/shpotify/shpotify.cfg";
+fi
+
 if ! [[ -f "${USER_CONFIG_FILE}" ]]; then
     touch "${USER_CONFIG_FILE}";
     echo -e "${USER_CONFIG_DEFAULTS}" > "${USER_CONFIG_FILE}";
