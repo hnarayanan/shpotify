@@ -34,9 +34,6 @@ else
     DIR_CONFIG_FILE="${XDG_CONFIG_HOME:-${HOME}/.config}/shpotify"
     mkdir -p "${DIR_CONFIG_FILE}"
     USER_CONFIG_FILE="${DIR_CONFIG_FILE}/shpotify.cfg"
-fi
-
-if ! [[ -f "${USER_CONFIG_FILE}" ]]; then
     touch "${USER_CONFIG_FILE}";
     echo -e "${USER_CONFIG_DEFAULTS}" > "${USER_CONFIG_FILE}";
 fi
