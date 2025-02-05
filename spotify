@@ -284,6 +284,131 @@ while [ $# -gt 0 ]; do
             fi
             break ;;
 
+        "search"    )
+          if [ $# != 1 ]; then
+              # There are additional arguments, so find out how many
+              array=( $@ );
+              len=${#array[@]};
+              SPOTIFY_SEARCH_API="https://api.spotify.com/v1/search";
+              SPOTIFY_TOKEN_URI="https://accounts.spotify.com/api/token";
+              if [ -z "${CLIENT_ID}" ]; then
+                  cecho "Invalid Client ID, please update ${USER_CONFIG_FILE}";
+                  showAPIHelp;
+                  exit 1;
+              fi
+              if [ -z "${CLIENT_SECRET}" ]; then
+                  cecho "Invalid Client Secret, please update ${USER_CONFIG_FILE}";
+                  showAPIHelp;
+                  exit 1;
+              fi
+              SHPOTIFY_CREDENTIALS=$(printf "${CLIENT_ID}:${CLIENT_SECRET}" | base64 | tr -d "\n");
+              SPOTIFY_PLAY_URI="";
+
+              getAccessToken() {
+                  cecho "Connecting to Spotify's API";
+
+                  SPOTIFY_TOKEN_RESPONSE_DATA=$( \
+                      curl "${SPOTIFY_TOKEN_URI}" \
+                          --silent \
+                          -X "POST" \
+                          -H "Authorization: Basic ${SHPOTIFY_CREDENTIALS}" \
+                          -d "grant_type=client_credentials" \
+                  )
+                  if ! [[ "${SPOTIFY_TOKEN_RESPONSE_DATA}" =~ "access_token" ]]; then
+                      cecho "Autorization failed, please check ${USER_CONFG_FILE}"
+                      cecho "${SPOTIFY_TOKEN_RESPONSE_DATA}"
+                      showAPIHelp
+                      exit 1
+                  fi
+                  SPOTIFY_ACCESS_TOKEN=$( \
+                      printf "${SPOTIFY_TOKEN_RESPONSE_DATA}" \
+                      | grep -E -o '"access_token":".*",' \
+                      | sed 's/"access_token"://g' \
+                      | sed 's/"//g' \
+                      | sed 's/,.*//g' \
+                  )
+              }
+
+              offset=0;
+              limit=10;
+
+              searchAndDisplay() {
+                  type="$1"
+                  Q="$2"
+
+                  if [ $offset = 0 ]; then
+                    getAccessToken;
+                    cecho "Searching ${type}s for: $Q";
+                  fi
+
+                  SPOTIFY_RESULTS=$( \
+                      curl -s -G $SPOTIFY_SEARCH_API \
+                          -H "Authorization: Bearer ${SPOTIFY_ACCESS_TOKEN}" \
+                          -H "Accept: application/json" \
+                          --data-urlencode "q=$Q" \
+                          -d "type=$(echo $type | sed -e "s/list/playlist/g")&limit=$limit&offset=$offset"
+                  )
+
+                  case $type in
+                      "album"   )
+                          echo "${SPOTIFY_RESULTS}" | jq -r '.albums.items | keys[] as $k | {id:([$k][]+1)  | tostring,name:[.[$k].name][0],artist:[.[$k].artists][0][0].name} | .id+": "+.artist+" - "+.name';;
+
+                      "track"   )
+                          echo "${SPOTIFY_RESULTS}" | jq -r '.tracks.items | keys[] as $k | {id:([$k][]+1)  | tostring,name:[.[$k].name][0],artist:[.[$k].artists][0][0].name} | .id+": "+.artist+" - "+.name';;
+
+                      "artist"   )
+                          echo "${SPOTIFY_RESULTS}" | jq -r '.artists.items | keys[] as $k | {id:([$k][]+1)  | tostring,name:[.[$k].name][0]} |.id+": "+.name';;
+
+                      "list"   )
+                          echo "${SPOTIFY_RESULTS}" | jq -r '.playlists.items | keys[] as $k | {id:([$k][]+1)  | tostring,name:[.[$k].name][0],owner:[.[$k].owner][0].id,tracks:[.[$k].tracks][0].total | tostring} | .id+": "+.name+" ("+.tracks+" tracks, by "+.owner+")"';;
+
+                  esac
+
+                  read -p "Make your selection: " key
+                  if [[ "$key" -ge 1 && "$key" -le $limit ]]; then
+                      ((key--))
+                      SPOTIFY_PLAY_URI=$(echo "${SPOTIFY_RESULTS}" | jq -r '.'"$(echo $type | sed -e "s/list/playlist/g")"'s.items['"$key"'].uri')
+                  elif [[ $key == "" ]]; then
+                      ((offset+=$limit))
+                      searchAndDisplay $type "$Q"
+                  else
+                      cecho "Wrong selection - exiting"
+                      exit
+                  fi
+
+
+              }
+
+              case $2 in
+                  "album" | "artist" | "track" | "list"    )
+                      _args=${array[@]:2:$len};
+                      searchAndDisplay $2 "$_args";;
+
+                  *   )
+                      _args=${array[@]:1:$len};
+                      searchAndDisplay track "$_args";;
+              esac
+
+              if [ "$SPOTIFY_RESULTS" != "" ]; then
+                  if [ "$2" = "uri" ]; then
+                      cecho "Playing Spotify URI: $SPOTIFY_PLAY_URI";
+                  else
+                      cecho "Playing ($Q Search) -> Spotify URI: $SPOTIFY_PLAY_URI";
+                  fi
+
+                  osascript -e "tell application \"Spotify\" to play track \"$SPOTIFY_PLAY_URI\"";
+
+              else
+                  cecho "No results when searching for $Q";
+              fi
+
+          else
+
+              # Error expected more parameters
+              cecho "Usage: spotify search <query>";
+          fi
+          break ;;
+
         "pause"    )
             state=`osascript -e 'tell application "Spotify" to player state as string'`;
             if [ $state = "playing" ]; then
