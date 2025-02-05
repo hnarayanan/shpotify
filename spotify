@@ -362,7 +362,7 @@ while [ $# -gt 0 ]; do
                 exit 1;
             fi
 
-            osascript -e "tell application \"Spotify\" to set sound volume to $newvol";
+            osascript -e "tell application \"Spotify\" to set sound volume to $(( newvol+1 ))";
             break ;;
 
         "toggle"  )
